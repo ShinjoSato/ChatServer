@@ -2,7 +2,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/newaccount.css" fx:controller="controller.GUIController" alignment="CENTER">
+<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/newaccount.css" fx:controller="client.GUIController" alignment="CENTER">
 	<VBox alignment="CENTER">
 		<Label text="e-mail"/>
 		<TextField fx:id="email" maxWidth="300.0"/>

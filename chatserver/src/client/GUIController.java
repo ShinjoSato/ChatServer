@@ -1,4 +1,4 @@
-package controller;
+package client;
 
 import java.io.File;
 import java.net.URL;
@@ -75,7 +75,7 @@ public class GUIController extends Application{
         System.out.println("user is "+ exist);*/
 
         
-        boolean exist = false;
+        boolean exist = true;
         if(exist){
             makeScene("fxml/friendlist.fxml", "friend list");
         }else{

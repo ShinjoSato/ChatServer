@@ -13,7 +13,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GUIController" stylesheets="@../css/friendlist.css">
+<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.GUIController" stylesheets="@../css/friendlist.css">
 	<VBox styleClass="title" alignment="CENTER">
 		<Label text="My Friend"/>
 	</VBox>

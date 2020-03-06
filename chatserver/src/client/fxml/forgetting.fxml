@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/forgetting.css" fx:controller="controller.GUIController" alignment="CENTER">
+<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/forgetting.css" fx:controller="client.GUIController" alignment="CENTER">
 	<VBox alignment="CENTER">
 
 		<Label text="user name"/>
