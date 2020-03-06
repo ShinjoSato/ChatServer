@@ -1,0 +1,16 @@
+.top {
+	-fx-font-size: 23pt;
+	-fx-background-color: "lawngreen";
+}
+
+.top HBox{
+	-fx-font-size: 9pt;
+}
+
+.bottom {
+	-fx-background-color: "grey";
+}
+
+#talkHistory VBox {
+	-fx-background-color: "pink";
+}

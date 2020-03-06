@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+
+<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/chat.css" fx:controller="controller.GUIController">
+	<VBox styleClass="top">
+		<Label styleClass="userName" text="User Name"/>
+		<HBox alignment="CENTER">
+			<TextField fx:id="keyword" maxWidth="300.0"/>
+			<Button text="search word" onAction="#searchWord"/>
+		</HBox>
+	</VBox>
+
+	<VBox styleClass="talkHistory" fx:id="talkHistory" layoutX="14.0" layoutY="100.0" prefHeight="600.0" prefWidth="100.0">
+		<Label  style="-fx-font-size: 17pt;" text="hi, shinjo"/>
+	</VBox>
+
+	<VBox styleClass="bottom"  layoutX="14.0" layoutY="200.0" prefHeight="300.0" prefWidth="100.0">
+		<HBox alignment="CENTER">
+			<TextArea fx:id="message" prefHeight="250.0" prefWidth="400.0" />
+			<Button text=":)" onAction="#pushEmoji"/>
+			<Button text="send message" onAction="#sendMessage"/>
+		</HBox>
+	</VBox>
+</VBox>
