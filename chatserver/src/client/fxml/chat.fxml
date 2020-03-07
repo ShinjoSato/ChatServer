@@ -5,7 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 
-<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/chat.css" fx:controller="client.GUIController">
+<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/chat.css" fx:controller="client.ClientController">
 	<VBox styleClass="top">
 		<Label styleClass="userName" text="User Name"/>
 		<HBox alignment="CENTER">

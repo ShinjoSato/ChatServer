@@ -13,11 +13,11 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.GUIController" stylesheets="@../css/friendlist.css">
+<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController" stylesheets="@../css/friendlist.css">
 	<VBox styleClass="title" alignment="CENTER">
-		<Label text="My Friend"/>
+		<Label fx:id="UserName" text="My Friend"/>
 	</VBox>
-	<VBox styleClass="list">
+	<VBox fx:id="friendList" styleClass="list">
 		<ListView fx:id="friendListView" onMouseClicked="#selectFriend" layoutX="14.0" layoutY="100.0" prefHeight="600.0" prefWidth="100.0">
 			<!--  <HBox styleClass="friendData">
 			    <ImageView fitHeight="50.0" fitWidth="50.0">
@@ -27,7 +27,11 @@
 			    </ImageView>
 				
 		    </HBox>-->
-		    <Label styleClass="friendData" text="Shinjo Sato"/>
+		    <!--
+		    <HBox>
+		    	<Label styleClass="friendData" style="-fx-text-fill: green;" text="●"/>
+		    	<Label styleClass="friendData" text="Shinjo Sato"/>
+		    </HBox>
 		    
 		    <Label styleClass="friendData" text="Chenghan Sun"/>
 		    
@@ -36,35 +40,7 @@
 		    <Label styleClass="friendData" text="Yem Yem"/>
 		    
 		    <Label styleClass="friendData" text="Saba Nejat"/>
-		    
-		    
-		    <!-- <HBox styleClass="friendData">
-			    <ImageView fitHeight="50.0" fitWidth="50.0">
-			    	<image>
-			           	<Image url="@../images/chen.jpg" />
-			    	</image>
-			    </ImageView>
-				
-		    </HBox>
-		    
-		    <HBox styleClass="friendData">
-			    <ImageView fitHeight="50.0" fitWidth="50.0">
-			    	<image>
-			           	<Image url="@../images/yem.jpg" />
-			    	</image>
-			    </ImageView>
-				
-		    </HBox>
-		    
-		    <HBox styleClass="friendData">
-			    <ImageView fitHeight="50.0" fitWidth="50.0">
-			    	<image>
-			           	<Image url="@../images/nejat.jpg" />
-			    	</image>
-			    </ImageView>
-				
-		    </HBox> -->
-
+		    -->
 		</ListView>
 	</VBox>
 </VBox>
