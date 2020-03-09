@@ -32,7 +32,7 @@ public class NewClientThread extends Thread{
 		this.s = s;
 	}
 	public NewClientThread(Socket s) {
-	    	//讓線程拿到s
+	    	//To get the socket of thread.
 	    	this.s=s;
 	    }
 	 public void run() {
@@ -40,7 +40,6 @@ public class NewClientThread extends Thread{
 			 // keep receiving message from server
 			 try {
 				ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
-	  			//此線程可接收server端的訊息
     			//this thread can receive message from server
     			//server  ------- Hi ----------------> client
     			Message m = (Message) ear.readObject();

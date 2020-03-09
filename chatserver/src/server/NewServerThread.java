@@ -16,7 +16,7 @@ public class NewServerThread extends Thread{
 	Socket s;
 	
     public NewServerThread(Socket s) {
-    	//讓線程拿到s
+    	//to get the socket of thread
     	this.s=s;
     }
     public void run() {
@@ -24,13 +24,12 @@ public class NewServerThread extends Thread{
     		
     		try {
     			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
-    			//此線程可接收客戶端的訊息
     			//this thread can receive message from client
     			//sender  ------- Hi ----------------> server
     			Message m = (Message) ear.readObject();
     			System.out.println(m.getSender()+" to "+m.getRecipient() + " say: "+ m.getContain());
     			System.out.println("-----\nFrom:"+m.getSender()+"\nTo: "+m.getRecipient()+"\nMessage: "+m.getContain()+"\n-----");
-    			//取得接收人的線程
+    			//To get the thread of recipient
     			//server ------- Hi ---------------->recipient 
     			NewServerThread FindRecipent = ManagerServerThread.getClientThread(m.getRecipient());
     			ObjectOutputStream  mouth = new ObjectOutputStream(FindRecipent.s.getOutputStream());
