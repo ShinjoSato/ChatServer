@@ -13,8 +13,8 @@
 		   </image>
 		</ImageView>
 
-		<Label text="User E-mail"/>
-		<TextField fx:id="email"  maxWidth="300.0"/>
+		<Label text="User ID"/>
+		<TextField fx:id="userID"  maxWidth="300.0"/>
 
 		<Label text="Password"/>
 		<TextField fx:id="password" maxWidth="300.0"/>

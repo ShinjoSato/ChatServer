@@ -64,7 +64,7 @@ public class ClientController extends Application{
      * @param friendListview	User selects a friend on "friendlist.fxml".
      */
     @FXML
-    public TextField username, password, email, keyword;
+    public TextField username, password, email, keyword, userID;
     public TextArea message;
     public VBox talkHistory;
     //public ListView<String> friendListView;
@@ -80,7 +80,7 @@ public class ClientController extends Application{
      */
     @FXML
     protected void signIn(ActionEvent event) throws Exception{
-        System.out.println("signIn: "+email.getText()+", "+password.getText());
+        System.out.println("signIn: "+userID.getText()+", "+password.getText());
 
         System.out.println(this.UserTable);
         
@@ -89,7 +89,7 @@ public class ClientController extends Application{
         ClientModel a = new ClientModel();
         //User b = a.sendLogInToServer(username.getText(), password.getText());
         
-        ClientUser = RuleBook.checkInUserTable(getUserTable(), email.getText(), password.getText());
+        ClientUser = RuleBook.checkInUserTable(getUserTable(), userID.getText(), password.getText());
         System.out.println(ClientUser);
         
         if(ClientUser.getUserID() == null){
@@ -104,7 +104,7 @@ public class ClientController extends Application{
     public static List<User> getUserTable(){
     	List<User> userTable = new ArrayList<User>();
         userTable.add(new User("01", "Shinjo Shinjo", "12345", "sxs1640@student.bham.ac.uk", true));
-        userTable.add(new User("02", "Yi-Ming Chen", "12345", "yxc1016@student.bham.ac.uk", true));
+        userTable.add(new User("yxc1016", "Yi-Ming Chen", "12345", "yxc1016@student.bham.ac.uk", true));
         userTable.add(new User("03", "Zhengnan Sun", "12345", "zxs944@student.bham.ac.uk", false));
         userTable.add(new User("04", "Saba Akhlagh-Nejat", "12345", "sxa1012@student.bham.ac.uk", true));
         userTable.add(new User("05", "Ibiyemi Ogunyemi", "12345", "ixo984@student.bham.ac.uk", false));

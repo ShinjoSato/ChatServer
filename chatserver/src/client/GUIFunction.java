@@ -138,6 +138,11 @@ public class GUIFunction {
 			}
 		});
 		Button messageButton = new Button("send message");
+		
+		
+		/**
+		 * Send message function.
+		 */
 		messageButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -152,6 +157,7 @@ public class GUIFunction {
 				chatText.setText("");
 			}	
 		});
+		
 		bottomHBox.getChildren().add(chatText);
 		bottomHBox.getChildren().add(emojiButton);
 		bottomHBox.getChildren().add(messageButton);
