@@ -33,11 +33,12 @@ public class ClientController extends Application{
 	private static Stage primaryStage;
 	private User ClientUser;
 	private List<User> UserTable;
+//	private ArrayList<VBox> friendChatData;
+	private GUIFunction GUI;
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
-        
         makeScene("fxml/login.fxml", "Login");
     }
 
@@ -47,9 +48,7 @@ public class ClientController extends Application{
 
     public void makeScene(String fxmlfile, String title, int width, int height) throws Exception {
         URL location = getClass().getResource(fxmlfile);
-
         Scene scene = GUIFunction.createNewScene(location, width, height);
-        
         this.primaryStage.setScene(scene);
         this.primaryStage.setTitle(title);
         this.primaryStage.show();
@@ -68,11 +67,13 @@ public class ClientController extends Application{
     public TextField username, password, email, keyword;
     public TextArea message;
     public VBox talkHistory;
-    public ListView<String> friendListView;
+    //public ListView<String> friendListView;
     
     @FXML
     public Label UserName;
-    //public Button closeWindow;
+    
+    @FXML
+    public VBox friendListBox;
     
     /**
      * This function is used on "login.fxml".
@@ -82,14 +83,14 @@ public class ClientController extends Application{
         System.out.println("signIn: "+email.getText()+", "+password.getText());
 
         System.out.println(this.UserTable);
-        ClientUser = checkInUserTable(email.getText(), password.getText());
+        ClientUser = RuleBook.checkInUserTable(getUserTable(), email.getText(), password.getText());
         System.out.println(ClientUser);
         if(ClientUser.getUserID() == null){
         	GUIFunction.createLoginfailWindow(getClass().getResource("fxml/loginfail.fxml"));
         }else{
-        	makeScene("fxml/friendlist.fxml", "friend list");
-            //addFriendToList();
-            sampleFriendList();
+        	GUI = new GUIFunction(ClientUser);
+        	createFriendListWindow();
+        	//renewFriendList();
         }
     }
     
@@ -103,17 +104,6 @@ public class ClientController extends Application{
         userTable.add(new User("06", "root", "1", "mail", false));
         
         return userTable;
-    }
-    
-    public static User checkInUserTable(String email, String password) {
-    	List<User> userTable = getUserTable();
-    	User loginUser = new User();
-    	for(int i=0; i<userTable.size(); i++) {
-    		if(userTable.get(i).getEmail().equals(email) && userTable.get(i).getPassword().equals(password)) {
-    			loginUser = userTable.get(i);
-    		}
-    	}
-    	return loginUser;
     }
 
     /**
@@ -161,89 +151,15 @@ public class ClientController extends Application{
     
     @FXML
     VBox friendList;
-    protected void addFriendToList() {
-    	User a = new User("1", "Shinjo", "1", "email", true);
-    	
-    	
-    	if(a.getUserName().equals("Shinjo")) {
-    		Label status = new Label("●");
-    		
-    		Label user = new Label("shinjo");
-    		
-    		HBox friend = new HBox();
-    		
-    		friend.getChildren().add(status);
-    		friend.getChildren().add(user);
-    		
-    		ObservableList<String> listRecords = FXCollections.observableArrayList("shinio", "sato");
-    		friendListView = new ListView<String>(listRecords);
-    		friendListView.setCellFactory(TextFieldListCell.forListView());
-    		friendListView.setEditable(true);
-    		
-    		System.out.println(friendListView);
-    	}
+    private void createFriendListWindow() throws Exception {
+       	makeScene("fxml/friendlist.fxml", "friend list");
     }
     
-    private void sampleFriendList() {
-    	List<User> friends = getUserTable();
-
-    	ListView<Label> list = GUIFunction.createFriendListView(friends);
-    	list.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-            	try {
-            		List<Label> test = (List<Label>)list.getSelectionModel().getSelectedItems();
-            		Label test1 = test.get(0);
-            		System.out.println(test1.getText());
-            		String[] friend = test1.getText().split(":");
-            		if(friends.get( list.getSelectionModel().getSelectedIndex() ).isState()) {
-            			URL location = getClass().getResource("fxml/chat.fxml");
-                    	Scene scene2 = GUIFunction.createNewScene(location, 350, 310);
-                    	
-                    	Stage stage2 = new Stage();
-                        stage2.setScene(scene2);
-                        stage2.show();
-            		}
-            	}catch(NullPointerException e){
-            	}
-            }
-        });
-    	
-        list.setEditable(true);
-        
-        Label header = new Label(ClientUser.getUserName());
-        header.setStyle("-fx-font-size: 45pt;");
-        VBox headerBox = new VBox();
-        headerBox.setStyle("alignment: center; -fx-background-color: \"indianred\"; ");
-        headerBox.getChildren().add(header);
-        
-        VBox root = new VBox(headerBox, list);
-                
-        Scene scene = new Scene(root, 450, 600);
-
-        primaryStage.setTitle("Friend list");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    /**
-     * This function is used on "friendlist.fxml".
-     */
     @FXML
-    protected void selectFriend (MouseEvent event) throws Exception {
-    	String frienddata = String.valueOf(friendListView.getSelectionModel().toString());
-    			
-        System.out.println("clicked on " + frienddata);
-        if(!frienddata.equals("null")) {
-        	URL location = getClass().getResource("fxml/chat.fxml");
-        	Scene scene2 = GUIFunction.createNewScene(location, 350, 310);
-        	
-        	UserName.setText(frienddata);
-        	Stage stage2 = new Stage();
-            stage2.setScene(scene2);
-            stage2.show();
-        	        	
-        }
+    protected void renewFriendList(ActionEvent event) throws Exception {
+    	ListView<HBox> friendlist = GUIFunction.createFriendListView(getUserTable());
+    	friendListBox.getChildren().remove(0);
+    	friendListBox.getChildren().add(friendlist);
     }
 
     /**
@@ -251,9 +167,10 @@ public class ClientController extends Application{
      */
     @FXML
     protected void sendMessage(ActionEvent event) {
-    	VBox chatView = GUIFunction.addChatView(message.getText());
+    	/*VBox chatView = GUIFunction.addChatView(message.getText());
         talkHistory.getChildren().add( chatView );
-        message.setText("");
+        System.out.println(talkHistory);
+        message.setText("");*/
     }
 
     /**
@@ -261,8 +178,8 @@ public class ClientController extends Application{
      */
     @FXML
     protected void searchWord(ActionEvent event) {
-        System.out.println(keyword.getText());
-        keyword.setText("");
+        /*System.out.println(keyword.getText());
+        keyword.setText("");*/
     }
 
     /**
@@ -270,7 +187,8 @@ public class ClientController extends Application{
      */
     @FXML
     protected void pushEmoji(ActionEvent event) {
-    	VBox emoji = GUIFunction.createEmoji();
-        talkHistory.getChildren().add( emoji );
+    	/*VBox emoji = GUIFunction.createEmoji();
+        talkHistory.getChildren().add( emoji );*/
     }
+    
 }

@@ -7,7 +7,7 @@
 
 <VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/chat.css" fx:controller="client.ClientController">
 	<VBox styleClass="top">
-		<Label styleClass="userName" text="User Name"/>
+		<Label fx:id="friendName" styleClass="userName" text="User Name"/>
 		<HBox alignment="CENTER">
 			<TextField fx:id="keyword" maxWidth="300.0"/>
 			<Button text="search word" onAction="#searchWord"/>

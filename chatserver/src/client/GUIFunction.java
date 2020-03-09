@@ -8,17 +8,31 @@ import java.util.List;
 import common.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class GUIFunction {
+	
+	private static User client;
+	
+	public GUIFunction(User client) {
+		this.client = client;
+	}
 	
 	public static Scene createNewScene(URL location, int width, int height) {
         FXMLLoader fxmlLoader = new FXMLLoader(location);
@@ -35,9 +49,7 @@ public class GUIFunction {
 	public static void createLoginfailWindow(URL location) {
 		System.out.println("createLoginfailWindow");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
-
         Stage stage2 = new Stage();
-
         Scene scene2;
 		try {
 			scene2 = new Scene((Pane)fxmlLoader.load(), 350, 310);
@@ -46,37 +58,121 @@ public class GUIFunction {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//return new Stage();
 	}
 	
-	public static ListView<Label> createFriendListView(List<User> friends) {
-    	ObservableList<Label> tests = FXCollections.observableArrayList();
+	public static ListView<HBox> createFriendListView(List<User> friends) {
+    	ObservableList<HBox> tests = FXCollections.observableArrayList();
     	for(int i=0; i<friends.size(); i++) {
+    		Label friendTag = new Label(friends.get(i).getUserName());
+			friendTag.setStyle("-fx-font-size: 20pt;");
+    		Label statusTag = new Label("●");
+    		if(friends.get(i).isState()) statusTag.setStyle("-fx-font-size: 20pt; -fx-text-fill: green;");
+    		else statusTag.setStyle("-fx-font-size: 20pt; -fx-text-fill: red;");
+    		HBox friendrow = new HBox(statusTag, friendTag);
     		
-    		Label friend = new Label(friends.get(i).getUserID()+" : "+friends.get(i).getUserName());
-    		friend.setStyle("-fx-font-size: 20pt;");
-    		if(friends.get(i).isState()) friend.setStyle("-fx-font-size: 20pt; -fx-text-fill: green;");
-    		else friend.setStyle("-fx-font-size: 20pt; -fx-text-fill: red;");
-    		/*HBox friendBox = new HBox(friend);
-    		
-    		Label status = new Label("●");
-    		if(friends.get(i).isState()) status.setStyle("-fx-font-size: 17pt; -fx-text-fill: green;");
-    		else status.setStyle("-fx-font-size: 20pt; -fx-text-fill: red;");
-    		HBox statusBox = new HBox(status);
-    		
-    		HBox test1 = new HBox();
-    		test1.getChildren().add(statusBox);
-    		test1.getChildren().add(friendBox);*/
-    		
-    		tests.add(friend);
+    		tests.add(friendrow);
     	}
-    	        	    	
-		return new ListView<>(tests);
+    	ListView<HBox> list = new ListView<>(tests);
+    	list.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+            	URL location = getClass().getResource("fxml/chat.fxml");
+            	//clickFriendOnList(event, list, friends, );
+            	try {
+            		List<Integer> friendIndex = list.getSelectionModel().getSelectedIndices();
+            		User friend = friends.get( friendIndex.get(0) );
+                    Stage stage2 = createChatStage(friend);
+                    stage2.show();
+            	}catch(NullPointerException e){}
+            }
+        });
+		return list;
 	}
 	
-	public static VBox addChatView(String messageText) {
-        System.out.println(messageText);
+	public static Stage createChatStage(User friend) {
+		System.out.println("The friend is "+ friend);
+		Group group = new Group();
+		
+		VBox allcontent = new VBox();
+		
+		VBox top = new VBox();
+		top.setPrefWidth(450);
+		top.setStyle("-fx-font-size: 23pt; -fx-background-color: \"lawngreen\";");
+		Label friendName = new Label(friend.getUserName());
+		HBox keyword = new HBox();
+		keyword.setAlignment(Pos.CENTER);
+		keyword.setStyle("-fx-font-size: 9pt;");
+		TextField keywordField = new TextField();
+		Button keywordButton = new Button("search keyword");
+		keyword.getChildren().add(keywordField);
+		keyword.getChildren().add(keywordButton);
+		top.getChildren().add(friendName);
+		top.getChildren().add(keyword);
+		
+		VBox talkHistory = new VBox();
+		talkHistory.setPrefWidth(450);
+		talkHistory.setPrefHeight(320);
+		talkHistory.setId("talkHistoryTo"+friend.getUserID());
+		ScrollPane scrollPane = new ScrollPane(talkHistory);
+	    scrollPane.setFitToHeight(true);
+		
+		VBox bottom = new VBox();
+		bottom.setStyle("-fx-background-color: \"grey\";");
+		bottom.setLayoutX(14.0);
+		bottom.setLayoutX(200.0);
+		bottom.setPrefHeight(300.0);
+		bottom.setPrefWidth(450.0);
+		HBox bottomHBox = new HBox();
+		TextArea chatText = new TextArea();
+		chatText.setWrapText(true);
+		Button emojiButton = new Button(":)");
+		emojiButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+				VBox textPhrase = new VBox();
+				textPhrase.setAlignment(Pos.BASELINE_RIGHT);
+				Label text = new Label(":)");
+				text.setStyle("-fx-font-size: 17pt;");
+				textPhrase.getChildren().add(text);
+				talkHistory.getChildren().add(textPhrase);
+			}
+		});
+		Button messageButton = new Button("send message");
+		messageButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
+				VBox textPhrase = new VBox();
+				textPhrase.setAlignment(Pos.BASELINE_RIGHT);
+				Label text = new Label(chatText.getText());
+				text.setStyle("-fx-font-size: 17pt;");
+				textPhrase.getChildren().add(text);
+				talkHistory.getChildren().add(textPhrase);
+				chatText.setText("");
+			}	
+		});
+		bottomHBox.getChildren().add(chatText);
+		bottomHBox.getChildren().add(emojiButton);
+		bottomHBox.getChildren().add(messageButton);
+		bottom.getChildren().add(bottomHBox);
+		
+		allcontent.getChildren().add(top);
+		allcontent.getChildren().add(scrollPane);
+		allcontent.getChildren().add(bottom);
+		
+		group.getChildren().add(allcontent);
 
+        Scene scene2 = new Scene(group, 450, 600);
+        Stage stage = new Stage();
+        stage.setScene(scene2);
+        
+        return stage;
+	}
+	
+/*	public static VBox addChatView(String messageText) {
+        System.out.println(messageText);
 
         VBox testbox = new VBox();
         testbox.setStyle("-fx-background-color: blue;");
@@ -103,8 +199,7 @@ public class GUIFunction {
         test.setStyle("-fx-font-size: 17pt; -fx-text-fill: pink;");
 
         testbox.getChildren().add(test);
-        //talkHistory.getChildren().add(testbox);
         
         return testbox;
-	}
+	}*/
 }

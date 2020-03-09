@@ -17,9 +17,10 @@
 	<VBox styleClass="title" alignment="CENTER">
 		<Label fx:id="UserName" text="My Friend"/>
 	</VBox>
-	<VBox fx:id="friendList" styleClass="list">
-		<ListView fx:id="friendListView" onMouseClicked="#selectFriend" layoutX="14.0" layoutY="100.0" prefHeight="600.0" prefWidth="100.0">
-			<!--  <HBox styleClass="friendData">
+	<VBox fx:id="friendListBox" styleClass="list">
+		<Label text=""/>
+		<!--<ListView fx:id="friendListView" onMouseClicked="#selectFriend" layoutX="14.0" layoutY="100.0" prefHeight="600.0" prefWidth="100.0">
+			  <HBox styleClass="friendData">
 			    <ImageView fitHeight="50.0" fitWidth="50.0">
 			    	<image>
 			           	<Image url="@../images/shinjo.jpg" />
@@ -40,7 +41,10 @@
 		    <Label styleClass="friendData" text="Yem Yem"/>
 		    
 		    <Label styleClass="friendData" text="Saba Nejat"/>
-		    -->
-		</ListView>
+		    
+		</ListView>-->
+	</VBox>
+	<VBox alignment="CENTER">
+		<Button text="update friend data" onAction="#renewFriendList"/>
 	</VBox>
 </VBox>
