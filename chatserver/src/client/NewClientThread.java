@@ -7,8 +7,8 @@ import java.net.Socket;
 import java.net.*;
 import client.*;
 import common.Message;
-import server.ManagerServerThread;
-import server.NewServerThread;
+//import server.ManagerServerThread;
+//import server.NewServerThread;
 
 import java.io.*;
 

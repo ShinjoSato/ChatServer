@@ -30,8 +30,8 @@ public class User implements Serializable{
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(String userId) {
-		this.userID = userId;
+	public void setUserID(String userID) {
+		this.userID = userID;
 	}
 	/**
 	 * @return the userName

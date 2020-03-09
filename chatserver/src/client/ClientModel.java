@@ -76,7 +76,7 @@ public class ClientModel {
 		System.out.println("input message¡G");
 		while(input.hasNext()) {
 		    try {
-			    ObjectOutputStream mouth = new ObjectOutputStream(client.s.getOutputStream());
+		    	ObjectOutputStream mouth = new ObjectOutputStream(client.s.getOutputStream());
 				a =input.next();
 				word.setContain(a);
 				mouth.writeObject(word);
