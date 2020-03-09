@@ -1,68 +1,90 @@
 package client;
 
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
-import common.*;
+import java.util.Scanner;
+import common.Message;
+import common.User;
+import javafx.scene.Scene;
 
 public class ClientModel {
-	public static Socket s;
+	public Socket s;
 	
-	public static boolean sendLogInToServer(String userID, String userPassword) {
-		boolean canLogin = false;
+	public  User sendLogInToServer(String ID, String password) {
 		try {
-			s = new Socket("192.168.0.74",50000);
+			s = new Socket("172.22.134.200",50000);
 			
 			//Send login request to server
 			ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
 			User a = new User();
-			//GUI
-			a.setUserId(userID);
-			a.setPassword(userPassword);
-			//GUI
+			a.setUserID(ID);
+			a.setPassword(password);
 			mouth.writeObject(a);
-			System.out.println("client send login to server");
+			System.out.println("client: send login request to server");
 
 			//receive result from server
 			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
 			Message resultFromServer = (Message) ear.readObject();
+			//verify login
 			if (resultFromServer.getMessageType().equals("1")) {
-				System.out.println("receive 1 from server into FriendList");
-			    canLogin= true;				
+				System.out.println("receive 1 from server, login successful");
+				NewClientThread thread = new NewClientThread(s);
+				ManagerClientThread.addServerThread(ID, thread);
+				thread.start();
+				//
+				
+				return a;
 			}
 		}
 		catch (Exception e) {
 			   e.printStackTrace();
 		}
-		return canLogin;
+		return new User();
     }
 	
 	//draft
-	public void sendMesToServer(String UserID, String text) {
-		try {
-			//Send message to server
-			ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
-			Message word = new Message();
-			word.setSender(UserID);
-			word.setContain(text);
-			word.setRecipient("Friend");
-			mouth.writeObject(word);
-			System.out.println("client send message to server");
-
-			//receive result from server
-			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
-			
-		}
-		catch (Exception e) {
-			   e.printStackTrace();
-		}
-    }
+//	public Message sendMessage(Message m) {
+//		try {
+//			//Send message to server
+//			ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
+//			Message word = new Message();
+//			word.setSender(m.getSender());
+//			//word.setContain();
+//			word.setRecipient("Midori");
+//			mouth.writeObject(word);
+//			System.out.println("client send message to server");
+//
+//			//receive result from server
+//			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
+//		}
+//		catch (Exception e) {
+//			   e.printStackTrace();
+//		}
+//    }
 	
 	public static void main(String[] args) {
-		ClientModel ccs = new ClientModel();
-		ccs.sendLogInToServer("yxc1016", "123456");
+		ClientModel client = new ClientModel();
+		client.sendLogInToServer("yxc1016", "12345");
+		Message word = new Message();
+		Scanner input =new Scanner(System.in);
+		String a = null;
+		word.setSender("Boris");
+		word.setRecipient("midori");
+		System.out.println("input message¡G");
+		while(input.hasNext()) {
+		    try {
+			    ObjectOutputStream mouth = new ObjectOutputStream(client.s.getOutputStream());
+				a =input.next();
+				word.setContain(a);
+				mouth.writeObject(word);
+		    } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		    }
+        }
 	}
 }
 
