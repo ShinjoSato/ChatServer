@@ -77,7 +77,6 @@ public class GUIFunction {
             @Override
             public void handle(MouseEvent event) {
             	URL location = getClass().getResource("fxml/chat.fxml");
-            	//clickFriendOnList(event, list, friends, );
             	try {
             		List<Integer> friendIndex = list.getSelectionModel().getSelectedIndices();
             		User friend = friends.get( friendIndex.get(0) );

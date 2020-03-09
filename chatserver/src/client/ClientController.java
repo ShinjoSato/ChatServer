@@ -83,8 +83,15 @@ public class ClientController extends Application{
         System.out.println("signIn: "+email.getText()+", "+password.getText());
 
         System.out.println(this.UserTable);
+        
+        // Finally we use this one: input email and passeword.
+        
+        ClientModel a = new ClientModel();
+        //User b = a.sendLogInToServer(username.getText(), password.getText());
+        
         ClientUser = RuleBook.checkInUserTable(getUserTable(), email.getText(), password.getText());
         System.out.println(ClientUser);
+        
         if(ClientUser.getUserID() == null){
         	GUIFunction.createLoginfailWindow(getClass().getResource("fxml/loginfail.fxml"));
         }else{
