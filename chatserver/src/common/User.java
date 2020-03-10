@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 public class User implements Serializable{
 	private String userID;
-	private String UserName;
+	private String userName;
 	private String password;
 	private String email;
 	private boolean state;
 	
 	public User (String userID, String userName, String password, String email, boolean state) {
 		this.userID = userID;
-		this.UserName = userName;
+		this.userName = userName;
 		this.password = password;
 		this.email = email;
 		this.state = state;
@@ -37,13 +37,13 @@ public class User implements Serializable{
 	 * @return the userName
 	 */
 	public String getUserName() {
-		return UserName;
+		return userName;
 	}
 	/**
 	 * @param userName the userName to set
 	 */
 	public void setUserName(String userName) {
-		UserName = userName;
+		userName = userName;
 	}
 	/**
 	 * @return the password
@@ -83,7 +83,7 @@ public class User implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "User [userID=" + userID + ", UserName=" + UserName + ", password=" + password + ", email=" + email
+		return "User [userID=" + userID + ", UserName=" + userName + ", password=" + password + ", email=" + email
 				+ ", state=" + state + "]";
 	} 
    	
