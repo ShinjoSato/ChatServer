@@ -19,32 +19,11 @@
 	</VBox>
 	<VBox fx:id="friendListBox" styleClass="list">
 		<Label text=""/>
-		<!--<ListView fx:id="friendListView" onMouseClicked="#selectFriend" layoutX="14.0" layoutY="100.0" prefHeight="600.0" prefWidth="100.0">
-			  <HBox styleClass="friendData">
-			    <ImageView fitHeight="50.0" fitWidth="50.0">
-			    	<image>
-			           	<Image url="@../images/shinjo.jpg" />
-			    	</image>
-			    </ImageView>
-				
-		    </HBox>-->
-		    <!--
-		    <HBox>
-		    	<Label styleClass="friendData" style="-fx-text-fill: green;" text="●"/>
-		    	<Label styleClass="friendData" text="Shinjo Sato"/>
-		    </HBox>
-		    
-		    <Label styleClass="friendData" text="Chenghan Sun"/>
-		    
-		    <Label styleClass="friendData" text="Yi Ming Chen"/>
-		     
-		    <Label styleClass="friendData" text="Yem Yem"/>
-		    
-		    <Label styleClass="friendData" text="Saba Nejat"/>
-		    
-		</ListView>-->
 	</VBox>
-	<VBox alignment="CENTER">
+	<!-- 
+		<VBox alignment="CENTER">
 		<Button text="update friend data" onAction="#renewFriendList"/>
 	</VBox>
+	 -->
+
 </VBox>

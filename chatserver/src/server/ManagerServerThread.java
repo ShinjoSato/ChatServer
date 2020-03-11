@@ -24,4 +24,17 @@ public class ManagerServerThread {
 	public static NewServerThread getClientThread(String email) {
 	    return (NewServerThread)ServerTable.get(email);
 	}
+	
+	public static String getAllOnlineUserID() {
+		
+		Iterator it = ServerTable.keySet().iterator();
+		String res="";
+		while(it.hasNext()) {
+			res+=it.next().toString()+"";
+		}
+		return res;
+	}
+	
+	
+	
 }

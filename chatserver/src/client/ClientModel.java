@@ -30,12 +30,12 @@ public class ClientModel {
 			Message resultFromServer = (Message) ear.readObject();
 			//verify login
 			if (resultFromServer.getMessageType().equals("1")) {
+				a.setState(true);
 				System.out.println("receive 1 from server, login successful");
 				NewClientThread thread = new NewClientThread(s);
 				ManagerClientThread.addServerThread(ID, thread);
 				thread.start();
 				//
-				
 				return a;
 			}
 		}
@@ -45,46 +45,26 @@ public class ClientModel {
 		return new User();
     }
 	
-	//draft
-//	public Message sendMessage(Message m) {
-//		try {
-//			//Send message to server
-//			ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
-//			Message word = new Message();
-//			word.setSender(m.getSender());
-//			//word.setContain();
-//			word.setRecipient("Midori");
-//			mouth.writeObject(word);
-//			System.out.println("client send message to server");
-//
-//			//receive result from server
-//			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
-//		}
-//		catch (Exception e) {
-//			   e.printStackTrace();
-//		}
-//    }
-	
 	public static void main(String[] args) {
 		ClientModel client = new ClientModel();
 		client.sendLogInToServer("yxc1016", "12345");
-		Message word = new Message();
-		Scanner input =new Scanner(System.in);
-		String a = null;
-		word.setSender("Boris");
-		word.setRecipient("midori");
-		System.out.println("input message¡G");
-		while(input.hasNext()) {
-		    try {
-		    	ObjectOutputStream mouth = new ObjectOutputStream(client.s.getOutputStream());
-				a =input.next();
-				word.setContain(a);
-				mouth.writeObject(word);
-		    } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		    }
-        }
+//		Message word = new Message();
+//		Scanner input =new Scanner(System.in);
+//		String a = null;
+//		word.setSender("Boris");
+//		word.setRecipient("midori");
+//		System.out.println("input message¡G");
+//		while(input.hasNext()) {
+//		    try {
+//		    	ObjectOutputStream mouth = new ObjectOutputStream(client.s.getOutputStream());
+//				a =input.next();
+//				word.setContain(a);
+//				mouth.writeObject(word);
+//		    } catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		    }
+ //       }
 	}
 }
 

@@ -39,10 +39,15 @@ public class ServerModel {
 //				   inputUser.getPassword().equals(dataUser.getPassword())) {
 	//------------------------------------need to get data from database------------------------
 				
-				if(inputUser.getUserID().equals("yxc1016") && 
-				   inputUser.getPassword().equals("12345")|| inputUser.getUserID().equals("01") && 
-				   inputUser.getPassword().equals("12345")) {   
+				if(inputUser.getUserID().equals("yxc1016") && inputUser.getPassword().equals("12345")
+				   || inputUser.getUserID().equals("01") && inputUser.getPassword().equals("12345")
+				   || inputUser.getUserID().equals("03") && inputUser.getPassword().equals("12345")) {   
 				   
+					//---------------------------------------------------------------------------
+					// update state to database
+					//----------------------------------------------------------------------------
+					
+					
 				   System.out.println("Server: login confirm.");
 				   
 				   // 1 means successful 
@@ -53,8 +58,6 @@ public class ServerModel {
 				   
 				   //build a thread between server and client, different client will input different socket
 				   NewServerThread thread = new NewServerThread(s);
-				   
-				   
 				   ManagerServerThread.addClientThread(inputUser.getUserID(), thread);
 				   //start the thread
 				   thread.start();

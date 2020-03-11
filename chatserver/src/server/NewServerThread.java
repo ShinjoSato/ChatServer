@@ -4,6 +4,8 @@ import java.net.*;
 
 import client.*;
 import common.Message;
+import common.MessageType;
+
 import java.io.*;
 /**
  * This class is Server Connect Client Thread, 
@@ -27,14 +29,29 @@ public class NewServerThread extends Thread{
     			//this thread can receive message from client
     			//sender  ------- Hi ----------------> server
     			Message m = (Message) ear.readObject();
-    			System.out.println(m.getSender()+" to "+m.getRecipient() + " say: "+ m.getContain());
+    		//	System.out.println(m.getSender()+" to "+m.getRecipient() + " say: "+ m.getContain());
     			System.out.println("-----\nFrom:"+m.getSender()+"\nTo: "+m.getRecipient()+"\nMessage: "+m.getContain()+"\n-----");
-    			//To get the thread of recipient
-    			//server ------- Hi ---------------->recipient 
-    			NewServerThread FindRecipent = ManagerServerThread.getClientThread(m.getRecipient());
-    			ObjectOutputStream  mouth = new ObjectOutputStream(FindRecipent.s.getOutputStream());
-    			mouth.writeObject(m);
     			
+    			//handle different type of message
+    			//3 is message
+    			//4 is Friend on-line state request
+    			//5
+    	//		if(m.getMessageType().equals(MessageType.message_comm_mes)) {
+    			   //To get the thread of recipient
+    			   //server ------- Hi ---------------->recipient 
+    			   NewServerThread FindRecipent = ManagerServerThread.getClientThread(m.getRecipient());
+    			   ObjectOutputStream  mouth = new ObjectOutputStream(FindRecipent.s.getOutputStream());
+    			   mouth.writeObject(m);
+//    			}else if(m.getMessageType().equals(MessageType.message_get_onLineFriend)){
+//    			   String res=ManagerServerThread.getAllOnlineUserID();
+//    			   Message m2 =new Message();
+//    			   m2.setMessageType(MessageType.message_ret_onLineFriend);
+//    			   m2.setContain(res);
+//    			   m2.setRecipient(m.getSender());
+//    			   ObjectOutputStream  mouth = new ObjectOutputStream(s.getOutputStream());
+//    			   mouth.writeObject(m2);
+//    			   
+  //  			}   
     		}
     	    catch (Exception e) {
     			   e.printStackTrace();

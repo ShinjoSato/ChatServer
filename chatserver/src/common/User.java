@@ -2,6 +2,8 @@ package common;
 
 import java.io.Serializable;
 
+import client.ClientController;
+
 public class User implements Serializable{
 	private String userID;
 	private String userName;
@@ -18,7 +20,6 @@ public class User implements Serializable{
 	}
 	
 	public User () {
-		
 	}
 	
 	/**
@@ -86,8 +87,5 @@ public class User implements Serializable{
 		return "User [userID=" + userID + ", UserName=" + userName + ", password=" + password + ", email=" + email
 				+ ", state=" + state + "]";
 	} 
-   	
-	
-
 }
 
