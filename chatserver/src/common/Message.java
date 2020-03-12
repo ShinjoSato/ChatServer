@@ -11,6 +11,8 @@ public class Message implements Serializable{
 	private String recipient;
 	private String contain;
 	private String sendTime;
+	private User owner;
+	private User friend;
 	/**
 	 * @return the owner
 	 */
@@ -35,8 +37,7 @@ public class Message implements Serializable{
 	public void setFriend(User friend) {
 		this.friend = friend;
 	}
-	private User owner;
-	private User friend;
+	
 	/**
 	 * @return the messageType
 	 */
