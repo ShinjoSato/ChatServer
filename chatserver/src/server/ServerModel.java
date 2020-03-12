@@ -11,7 +11,7 @@ import common.Message;
 import common.User;
 
 public class ServerModel {
-
+    
 	public ServerModel(){
 		try {
 			System.out.println("Server Listening");

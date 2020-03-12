@@ -34,6 +34,10 @@ public class ChatWindow {
 		createChatWindowStage();
 	}
 	
+	public ChatWindow() {
+		
+	}
+	
 	public void createChatWindowStage() {
 		System.out.println("The friend is "+ friend);
 		Group group = new Group();
@@ -99,7 +103,6 @@ public class ChatWindow {
 		        m.setRecipient(friend.getUserID());// friednName
 		        m.setContain(chatText.getText()); //message contain
 				System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
-		        chatText.setText("");
 		        try {
 					ObjectOutputStream mouth = new ObjectOutputStream(
 			        (ManagerClientThread.getServerThread(m.getSender()).getS()).getOutputStream());
@@ -107,6 +110,7 @@ public class ChatWindow {
 		        } catch (IOException e) {
 					e.printStackTrace();
 				}
+		        chatText.setText("");
 			}	
 		});
 		bottomHBox.getChildren().add(emojiButton);
@@ -129,9 +133,10 @@ public class ChatWindow {
 		return this.stage;
 	}
 	
-	public void receiveMessage(Message m) {
-		System.out.println("-----\nTo: "+friend+"\nMessage: "+m.getContain()+"\n-----");
-		talkHistory.getChildren().add( createSpeechBubble(m.getContain(), Pos.BASELINE_LEFT) );
+	public void receiveMessage(String message) {
+		System.out.println("-----\nTo: "+friend+"\nMessage: "+message+"\n-----");
+		talkHistory.getChildren().add( createSpeechBubble(message, Pos.BASELINE_LEFT) );
+	    System.out.println("This is chat window, I receive "+ message);
 	}
 	
 	/**

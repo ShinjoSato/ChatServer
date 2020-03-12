@@ -12,6 +12,32 @@ public class Message implements Serializable{
 	private String contain;
 	private String sendTime;
 	/**
+	 * @return the owner
+	 */
+	public User getOwner() {
+		return owner;
+	}
+	/**
+	 * @param owner the owner to set
+	 */
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+	/**
+	 * @return the friend
+	 */
+	public User getFriend() {
+		return friend;
+	}
+	/**
+	 * @param friend the friend to set
+	 */
+	public void setFriend(User friend) {
+		this.friend = friend;
+	}
+	private User owner;
+	private User friend;
+	/**
 	 * @return the messageType
 	 */
 	public String getMessageType() {
@@ -56,8 +82,8 @@ public class Message implements Serializable{
 	/**
 	 * @param con the contain to set
 	 */
-	public void setContain(String con) {
-		this.contain = con;
+	public void setContain(String contain) {
+		this.contain = contain;
 	}
 	/**
 	 * @return the sendTime

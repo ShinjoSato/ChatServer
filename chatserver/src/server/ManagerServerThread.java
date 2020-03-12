@@ -1,6 +1,8 @@
 package server;
 
 import java.util.*;
+
+import common.User;
 /**
  * 
  * To manage Server connect Client thread

@@ -33,8 +33,9 @@ public class ClientModel {
 				a.setState(true);
 				System.out.println("receive 1 from server, login successful");
 				NewClientThread thread = new NewClientThread(s);
-				ManagerClientThread.addServerThread(ID, thread);
+				ManagerClientThread.addServerThread(a.getUserID(), thread);
 				thread.start();
+				System.out.println("client build the receive thread");
 				//
 				return a;
 			}
@@ -46,13 +47,14 @@ public class ClientModel {
     }
 	
 	public static void main(String[] args) {
-		ClientModel client = new ClientModel();
-		client.sendLogInToServer("yxc1016", "12345");
+//		System.out.println("This is ClientModel.java");
+//		ClientModel client = new ClientModel();
+//		client.sendLogInToServer("yxc1016", "12345");
 //		Message word = new Message();
 //		Scanner input =new Scanner(System.in);
 //		String a = null;
 //		word.setSender("Boris");
-//		word.setRecipient("midori");
+//		word.setRecipient("Shinjo");
 //		System.out.println("input message¡G");
 //		while(input.hasNext()) {
 //		    try {
@@ -64,7 +66,7 @@ public class ClientModel {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		    }
- //       }
+//        }
 	}
 }
 

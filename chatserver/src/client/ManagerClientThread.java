@@ -1,6 +1,8 @@
 package client;
 
 import java.util.*;
+
+import common.User;
 /**
  * 
  * To manage Client connect server thread
@@ -9,7 +11,7 @@ import java.util.*;
 
 //this is ManageThread
 public class ManagerClientThread {
-	public static HashMap threadTable = new HashMap<String,NewClientThread>();
+	public static HashMap threadTable = new HashMap<String ,NewClientThread>();
 	// if on-line the email ID should be in the map
 	
 	

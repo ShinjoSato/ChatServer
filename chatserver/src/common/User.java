@@ -44,7 +44,7 @@ public class User implements Serializable{
 	 * @param userName the userName to set
 	 */
 	public void setUserName(String userName) {
-		userName = userName;
+		this.userName = userName;
 	}
 	/**
 	 * @return the password

@@ -4,6 +4,8 @@
 package client;
 
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.List;
 import java.net.*;
 import client.*;
 import common.Message;
@@ -11,7 +13,6 @@ import common.Message;
 //import server.NewServerThread;
 import common.MessageType;
 import common.User;
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import java.io.*;
 
@@ -49,11 +50,10 @@ public class NewClientThread extends Thread{
     			Message m = (Message) ear.readObject();
     			System.out.println(m.getSender()+" to "+m.getRecipient() + " say: "+ m.getContain());
     			
-    			//show the text message(From server) on the correct window
-    			ChatWindow window= ManageChatWindow.getChatWindow(m.getSender()+" "+m.getRecipient());
-    			window.receiveMessage(m);
-    			
-//    			if(m.getMessageType().equals(MessageType.message_comm_mes)) {
+            	User friend =ClientController.f;
+    			ClientController.chatRooms.get(friend).receiveMessage(m.getContain());;
+
+    			//    			if(m.getMessageType().equals(MessageType.message_comm_mes)) {
 //    				
 //    			}
 //    			else if(m.getMessageType().equals(MessageType.message_ret_onLineFriend)) {
@@ -65,13 +65,9 @@ public class NewClientThread extends Thread{
 //    			     
 //    			     
    // 			}
-
 			 } catch (Exception e) {
 				  e.printStackTrace();
 			}
-			 
-			 
-			 
 		 }
 		 
 	 }

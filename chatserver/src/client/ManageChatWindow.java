@@ -13,16 +13,16 @@ import common.User;
 
 
 public class ManageChatWindow {
-    private static HashMap storeWindow = new HashMap<String, ChatWindow>();
+    private static HashMap storeWindow = new HashMap<ChatWindow, ChatWindow>();
     
     //add
-    public static void addChatWindow(String lodinIDAndFriendID, ChatWindow chat) {
-    	storeWindow.put(lodinIDAndFriendID, chat);
+    public static void addChatWindow(ChatWindow friend, ChatWindow chat) {
+    	storeWindow.put(friend, chat);
     }
     
     //get
-    public static ChatWindow getChatWindow(String lodinIDAndFriendID) {
-    	return (ChatWindow)storeWindow.get(lodinIDAndFriendID);
+    public static ChatWindow getChatWindow(ChatWindow friend) {
+    	return (ChatWindow)storeWindow.get(friend);
     }
     
 }

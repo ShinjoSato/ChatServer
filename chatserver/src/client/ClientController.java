@@ -40,6 +40,7 @@ public class ClientController extends Application{
 	private List<User> UserTable;
 	protected static HashMap<User, ChatWindow> chatRooms;
 	private final static int WindowHeight = 600;
+	protected static User f;
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
@@ -291,41 +292,38 @@ public class ClientController extends Application{
             @Override
             public void handle(MouseEvent event) {            	
             	List<Integer> friendIndex = list.getSelectionModel().getSelectedIndices();
-            	User friend = friends.get( friendIndex.get(0) );
-            	
-            	
-            	//if(chatRooms.get(friend) == null) {
+            	User friend = friends.get( friendIndex.get(0));
+            	f = friend; 
+            	if(chatRooms.get(friend) == null) {
             		System.out.println("create chatwindow");	
-            		
             		ChatWindow chatwindow = new ChatWindow(ClientUser,friend);
-            		ManageChatWindow.addChatWindow(ClientUser.getUserID()+" "+friend.getUserID(), chatwindow);
-                	
- //           		chatRooms.put(friend, chatwindow);
+            		chatRooms.put(friend, chatwindow);
                     Stage stage2 = chatwindow.getStage();
                     stage2.show();
-//                    
-//                    /*
-//                     * ---------------------------------------------------
-//                     * It happens when the client close the chat window.
-//                     * ---------------------------------------------------
-//                     */
-//                    stage2.showingProperty().addListener((observable, oldValue, newValue) -> {
-//                        if (oldValue == true && newValue == false) {
-//                        	System.out.println("The window close");
-//                        	chatRooms.remove(friend);
-//                        }
-//                    });
-//            	}else {
-//            		System.out.println("The chatroom already exist.");
-//            		//chatRooms.get(friend).receiveMessage();
-//            	}
-//            	
+                    
+                    /*
+                     * ---------------------------------------------------
+                     * It happens when the client close the chat window.
+                     * ---------------------------------------------------
+                     */
+                    stage2.showingProperty().addListener((observable, oldValue, newValue) -> {
+                        if (oldValue == true && newValue == false) {
+                        	System.out.println("The window close");
+                        	chatRooms.remove(friend);
+                        }
+                    });
+            	}else {
+            		System.out.println("The chatroom already exist.");
+            		//chatRooms.get(friend).receiveMessage("hey hey");
+            	}
+            	
             	System.out.println("the size of chatroom is "+chatRooms.size());
             }
         });
 		return list;
 	}
 	public static void main(String[] args) {
+		System.out.println("Here is ClientContriller.java");
 	 	launch(args);
 	}
 }

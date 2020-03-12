@@ -39,9 +39,13 @@ public class NewServerThread extends Thread{
     	//		if(m.getMessageType().equals(MessageType.message_comm_mes)) {
     			   //To get the thread of recipient
     			   //server ------- Hi ---------------->recipient 
+    			   System.out.println("check I am here 1");
     			   NewServerThread FindRecipent = ManagerServerThread.getClientThread(m.getRecipient());
+    			   System.out.println("check I am here 2");
     			   ObjectOutputStream  mouth = new ObjectOutputStream(FindRecipent.s.getOutputStream());
+    			   System.out.println("check I am here 3");
     			   mouth.writeObject(m);
+    			   System.out.println("check I am here 4");
 //    			}else if(m.getMessageType().equals(MessageType.message_get_onLineFriend)){
 //    			   String res=ManagerServerThread.getAllOnlineUserID();
 //    			   Message m2 =new Message();
