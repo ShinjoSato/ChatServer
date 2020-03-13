@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import common.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -32,6 +33,10 @@ public class ChatWindow {
 		this.stage  = new Stage();
 		this.talkHistory = new VBox();
 		createChatWindowStage();
+	}
+	
+	public String toString() {
+		return "client:"+client+", friend:"+friend;
 	}
 	
 	/**
@@ -63,7 +68,6 @@ public class ChatWindow {
 	}
 
 	public ChatWindow() {
-		
 	}
 	
 	public void createChatWindowStage() {
@@ -130,11 +134,13 @@ public class ChatWindow {
 		        m.setSender(client.getUserID()); 
 		        m.setRecipient(friend.getUserID());// friednName
 		        m.setContain(chatText.getText()); //message contain
-				System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
+				System.out.println("The line is 136: -----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
 		        try {
 					ObjectOutputStream mouth = new ObjectOutputStream(
-			        (ManagerClientThread.getServerThread(m.getSender()).getS()).getOutputStream());
+						(ClientController.getServerThread(m.getSender()).getS()).getOutputStream()
+					);
 				    mouth.writeObject(m);
+				    System.out.println("142");
 		        } catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -155,6 +161,7 @@ public class ChatWindow {
         Scene scene2 = new Scene(group, 450, 600);
         this.stage = new Stage();
         this.stage.setScene(scene2);
+        this.stage.setTitle("From:"+client.getUserName()+" -> To:"+friend.getUserName());
 	}
 	
 	public Stage getStage() {
@@ -163,27 +170,26 @@ public class ChatWindow {
 	
 	public void receiveMessage(String message) {
 		System.out.println("receiveMessage\n-----\nTo: "+friend+"\nMessage: "+message+"\n-----");
-		this.talkHistory.getChildren().add( createSpeechBubble(message, Pos.BASELINE_LEFT) );
-	    System.out.println("This is chat window, I receive "+ message);
+		
+		final String string = message;
+		Platform.runLater(new Runnable() {
+		    @Override
+		    public void run() {
+		        // Update UI here.
+		    	talkHistory.getChildren().add( createSpeechBubble(string, Pos.BASELINE_LEFT) );
+		    }
+		});
+			//this.talkHistory.getChildren().add( createSpeechBubble(message, Pos.BASELINE_LEFT) );
+		createSpeechBubble(message, Pos.BASELINE_LEFT);
 	}
-	
-	public void test() {
-		System.out.println("The client is "+client);
-	}
-	
-	/**
-	 * This function creates speech bubbles like "Hi! How are you?" on the chat screen.
-	 * @param message
-	 * @param position
-	 * @return
-	 */
+
 	public VBox createSpeechBubble(String message, Pos position) {
 		VBox textPhrase = new VBox();
 		if(!message.equals("")) {
 			textPhrase.setPrefWidth(0.2);
 			textPhrase.setPrefHeight(0.2);
 			textPhrase.setAlignment(position);		
-			//textPhrase.setStyle("-fx-background-color: \"lightblue\";");
+
 			Label text = new Label("  "+message+"  ");
 			if(position == Pos.BASELINE_RIGHT) {
 				text.setStyle("-fx-font-size: "+fontSize+"pt; -fx-background-color: \"lightgreen\"; -fx-background-radius: 30px; -fx-effect: dropshadow(three-pass-box, rgb(0, 0, 0, 0.6), 5, 0.0, 0, 2);");
