@@ -17,7 +17,7 @@
 		<TextField fx:id="userID"  maxWidth="300.0"/>
 
 		<Label text="Password"/>
-		<TextField fx:id="password" maxWidth="300.0"/>
+		<PasswordField fx:id="password" maxWidth="300.0"/>
 
            
 		<Button styleClass="login" text="Log in" onAction="#signIn"/>

@@ -45,18 +45,12 @@ public class ClientController extends Application{
 	private final static int WindowHeight = 600;
 	static List<Integer> Transfer;	
 	public static ChatWindow c; 
-	
-	private boolean isLoggedIn;
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
         chatRooms = new HashMap<String, ChatWindow>();
         makeScene("fxml/login.fxml", "Login");
-        isLoggedIn = false;
-        
-        
-        
     }
 	
 	public static Scene createNewScene(URL location, int width, int height) {
@@ -78,7 +72,6 @@ public class ClientController extends Application{
     public void makeScene(String fxmlfile, String title, int width, int height) throws Exception {
         URL location = getClass().getResource(fxmlfile);
         Scene scene = createNewScene(location, width, height);
-        System.out.println("The title is "+title);
         this.primaryStage.setScene(scene);
         this.primaryStage.setTitle(title);
         this.primaryStage.show();
@@ -111,28 +104,20 @@ public class ClientController extends Application{
      * 
      * --------------------------------
      */
+    
     @FXML
-    protected void signIn(ActionEvent event) throws Exception{
-        System.out.println("signIn: "+userID.getText()+", "+password.getText());
-
-        System.out.println(this.UserTable);
-        
+    protected void signIn(ActionEvent event) throws Exception{        
         // Finally we use this one: input email and password.
-        
-        
         User ClientUser = sendLogInToServer(userID.getText(), password.getText());
-        System.out.println(ClientUser);
         
         if(ClientUser.getUserID() == null){
         	Stage newStage = new Stage();
     		newStage.initModality(Modality.NONE);
     		newStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("fxml/loginfail.fxml")), 450, 300 ) );
     		newStage.setTitle(ClientUser.getUserID());
-    		System.out.println("The title is :"+ClientUser.getUserName());
     		newStage.show();
         }else{
         	this.primaryStage.close();
-        	System.out.println("This is 133: "+ClientUser);
         	createFriendListWindow(ClientUser);
         }
     }
@@ -160,8 +145,6 @@ public class ClientController extends Application{
 				
 				thread.start();
 				return a;
-//				isLoggedIn = true;
-//				return a;
 			}
 		}
 		catch (Exception e) {
@@ -198,13 +181,11 @@ public class ClientController extends Application{
 
     @FXML
     protected void moveToNewaccount(ActionEvent event) throws Exception{
-        System.out.println("create new account");
         makeScene("fxml/NewAccount.fxml", "create account");
     }
 
     @FXML
     protected void forgetPassword(ActionEvent event) throws Exception{
-        System.out.println("forget your password?");
         makeScene("fxml/forgetting.fxml", "forget your password?");
     }
 
@@ -215,16 +196,19 @@ public class ClientController extends Application{
      * 
      * ----------------------------------------
      */
-    
     @FXML
-    protected void createAccount(ActionEvent event) {System.out.println(email.getText()+", "+username.getText()+", "+password.getText());}
+    protected void createAccount(ActionEvent event) {
+    }
 
     @FXML
-    protected void backToLogin(ActionEvent event) throws Exception {makeScene("fxml/login.fxml", "Login");}
+    protected void backToLogin(ActionEvent event) throws Exception {
+    	makeScene("fxml/login.fxml", "Login");
+    }
 
     
     @FXML
-    protected void sendPassword(ActionEvent event) throws Exception {}
+    protected void sendPassword(ActionEvent event) throws Exception {
+    }
     
     /**
      * ---------------------------------------
@@ -233,10 +217,8 @@ public class ClientController extends Application{
      * 
      * ---------------------------------------
      */
-    
     private void createFriendListWindow(User ClientUser) throws Exception {
     	this.primaryStage = createFriendListStage(ClientUser);
-    	System.out.println("This is 203:"+ClientUser);
     	this.primaryStage.setTitle("user id: "+ClientUser.getUserID());
     	this.primaryStage.show();
     }
@@ -250,11 +232,12 @@ public class ClientController extends Application{
     	VBox leftBox = new VBox();    	
     	leftBox.setPrefWidth(60);
     	leftBox.setPrefHeight(WindowHeight);
-    	leftBox.setStyle("-fx-background-color: #00355e;");
+    	leftBox.getStyleClass().add("leftBox");
     	Button addingFriend = new Button();
     	addingFriend.setPrefWidth(60);
     	addingFriend.setPrefHeight(60);
-    	addingFriend.setStyle("-fx-background-image: url(\"./client/images/addFriendImg_60x60.png\"); -fx-background-color: #00355e;");
+    	addingFriend.getStyleClass().add("addingFriend");
+    	
     	addingFriend.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -278,6 +261,9 @@ public class ClientController extends Application{
     	group.getChildren().add(allcontent);
 
         Scene scene2 = new Scene(group, 450, WindowHeight);
+        scene2.getStylesheets().add(
+        	getClass().getResource("./css/friendlist.css").toExternalForm()
+        );
         Stage stage = new Stage();
         stage.setTitle(ClientUser.getUserName());
         stage.setScene(scene2);
@@ -286,9 +272,6 @@ public class ClientController extends Application{
 
     public void updateFriendList() {
     	ListView<HBox> friendlist = createFriendListView(getUserTable(), ClientUser);
-    	//friendListBox.getChildren().remove(0);
-    	
-    	System.out.println("This is friendlistbox: "+friendListBox);
     	if(friendListBox == null) {
     		friendListBox = new VBox();
     	}
@@ -299,10 +282,10 @@ public class ClientController extends Application{
     	ObservableList<HBox> tests = FXCollections.observableArrayList();
     	for(int i=0; i<friends.size(); i++) {
     		Label friendTag = new Label(friends.get(i).getUserName());
-			friendTag.setStyle("-fx-font-size: 20pt; -fx-font-family: 'Courier';");
+			friendTag.getStyleClass().add("friendTag");
     		Label statusTag = new Label("●");
-    		if(friends.get(i).isState()) statusTag.setStyle("-fx-font-size: 20pt; -fx-text-fill: green;");
-    		else statusTag.setStyle("-fx-font-size: 20pt; -fx-text-fill: red;");
+    		if(friends.get(i).isState()) statusTag.getStyleClass().add("statusT");
+    		else 						 statusTag.getStyleClass().add("statusF");
     		HBox friendrow = new HBox(statusTag, friendTag);
     		
     		tests.add(friendrow);
@@ -316,7 +299,6 @@ public class ClientController extends Application{
             	List<Integer> friendIndex = list.getSelectionModel().getSelectedIndices();
             	User friend = friends.get(friendIndex.get(0)); 
             	if(chatRooms.get(friend.getUserID()) == null) {
-            		System.out.println("create new chatwindow");	
             		ChatWindow chatwindow = new ChatWindow(ClientUser,friend);
             		chatRooms.put(friend.getUserID(), chatwindow);
                     Stage stage2 = chatwindow.getStage();
@@ -324,34 +306,28 @@ public class ClientController extends Application{
                     
                     /*
                      * ---------------------------------------------------
-                     * It happens when the client close the chat window.
+                     * closing the chat window.
                      * ---------------------------------------------------
                      */
-                    
                     stage2.showingProperty().addListener((observable, oldValue, newValue) -> {
                         if (oldValue == true && newValue == false) {
-                        	System.out.println("The window close");
                         	chatRooms.remove(friend.getUserID());
                         }
                     });
             	}else {
             		System.out.println("The chatroom already exist.");
-            		chatRooms.get(friend.getUserID()).receiveMessage("hey Boy");
+            		//chatRooms.get(friend.getUserID()).receiveMessage("hey Boy");
             	}
-            	
-            	System.out.println("the size of chatroom is "+chatRooms.size());
             }
         });
 		return list;
 	}
-	
 	
 	public static HashMap<String, ChatWindow> getChatroom() {
 		return chatRooms; 
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("Here is ClientContriller.java");
 	 	launch(args);
 	}
 }

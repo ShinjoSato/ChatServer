@@ -24,21 +24,15 @@ public class ChatWindow {
 	private User client, friend;
 	private Stage stage;
 	private VBox talkHistory;
-	private final String fontSize = "13";
 	
 	public ChatWindow(User client, User friend) {
-		System.out.println("Enter here");
 		this.client = client;
 		this.friend = friend;
 		this.stage  = new Stage();
 		this.talkHistory = new VBox();
 		createChatWindowStage();
 	}
-	
-	public String toString() {
-		return "client:"+client+", friend:"+friend;
-	}
-	
+
 	/**
 	 * @return the client
 	 */
@@ -71,19 +65,18 @@ public class ChatWindow {
 	}
 	
 	public void createChatWindowStage() {
-		System.out.println("The friend is "+ friend);
 		Group group = new Group();
 		
 		VBox allcontent = new VBox();
 		
 		VBox top = new VBox();
 		top.setPrefWidth(450);
-		top.setStyle("-fx-font-size: 23pt; -fx-background-color: linear-gradient(to right, #00355e, #003541);");
+		top.getStyleClass().add("top");
 		Label friendName = new Label(friend.getUserName());
-		friendName.setStyle("-fx-text-fill: white;");
+		friendName.getStyleClass().add("friendName");
 		HBox keyword = new HBox();
 		keyword.setAlignment(Pos.CENTER);
-		keyword.setStyle("-fx-font-size: 9pt;");
+		keyword.getStyleClass().add("keyword");
 		TextField keywordField = new TextField();
 		Button keywordButton = new Button("search keyword");
 		keyword.getChildren().add(keywordField);
@@ -95,23 +88,21 @@ public class ChatWindow {
 		talkHistory.setPrefWidth(450);
 		talkHistory.setPrefHeight(420);
 		talkHistory.setId("talkHistoryTo"+friend.getUserID());
-		talkHistory.setStyle("-fx-background-image: url(\"./client/images/background-chatroom.jpg\");");
-		String cd = new File("./src").getAbsoluteFile().getParent();
-        System.out.println(cd);
+		talkHistory.getStyleClass().add("talkHistory");
 		ScrollPane scrollPane = new ScrollPane(talkHistory);
 	    scrollPane.setFitToHeight(true);
 	    middle.getChildren().add(scrollPane);
 		
 		VBox bottom = new VBox();
-		bottom.setStyle("-fx-background-color: \"grey\";");
+		bottom.getStyleClass().add("bottom");
 		HBox bottomHBox = new HBox();
-		bottomHBox.setStyle(" -fx-background-color: lightgray;");
+		bottomHBox.getStyleClass().add("bottomHBox");
 		TextArea chatText = new TextArea();
 		chatText.setWrapText(true);
 		chatText.setPrefHeight(100.0);
 		chatText.setPrefWidth(200.0);
 		Button emojiButton = new Button(":)");
-		emojiButton.setStyle("-fx-background-radius: 30px;");
+		emojiButton.getStyleClass().add("emojiButton");
 		emojiButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -120,8 +111,7 @@ public class ChatWindow {
 		});
 		
 		Button messageButton = new Button("send message");
-		messageButton.setStyle("-fx-background-radius: 30px;");
-		
+		messageButton.getStyleClass().add("messageButton");
 		/**
 		 * Send message function.
 		 */
@@ -134,13 +124,12 @@ public class ChatWindow {
 		        m.setSender(client.getUserID()); 
 		        m.setRecipient(friend.getUserID());// friednName
 		        m.setContain(chatText.getText()); //message contain
-				System.out.println("The line is 136: -----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
+				System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
 		        try {
 					ObjectOutputStream mouth = new ObjectOutputStream(
 						(ClientController.getServerThread(m.getSender()).getS()).getOutputStream()
 					);
 				    mouth.writeObject(m);
-				    System.out.println("142");
 		        } catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -159,6 +148,9 @@ public class ChatWindow {
 		group.getChildren().add(allcontent);
 
         Scene scene2 = new Scene(group, 450, 600);
+        scene2.getStylesheets().add(
+        	getClass().getResource("./css/chat.css").toExternalForm()
+        );
         this.stage = new Stage();
         this.stage.setScene(scene2);
         this.stage.setTitle("From:"+client.getUserName()+" -> To:"+friend.getUserName());
@@ -169,8 +161,6 @@ public class ChatWindow {
 	}
 	
 	public void receiveMessage(String message) {
-		System.out.println("receiveMessage\n-----\nTo: "+friend+"\nMessage: "+message+"\n-----");
-		
 		final String string = message;
 		Platform.runLater(new Runnable() {
 		    @Override
@@ -179,7 +169,6 @@ public class ChatWindow {
 		    	talkHistory.getChildren().add( createSpeechBubble(string, Pos.BASELINE_LEFT) );
 		    }
 		});
-			//this.talkHistory.getChildren().add( createSpeechBubble(message, Pos.BASELINE_LEFT) );
 		createSpeechBubble(message, Pos.BASELINE_LEFT);
 	}
 
@@ -191,11 +180,8 @@ public class ChatWindow {
 			textPhrase.setAlignment(position);		
 
 			Label text = new Label("  "+message+"  ");
-			if(position == Pos.BASELINE_RIGHT) {
-				text.setStyle("-fx-font-size: "+fontSize+"pt; -fx-background-color: \"lightgreen\"; -fx-background-radius: 30px; -fx-effect: dropshadow(three-pass-box, rgb(0, 0, 0, 0.6), 5, 0.0, 0, 2);");
-			}else {
-				text.setStyle("-fx-font-size: "+fontSize+"pt; -fx-background-color: \"lightgray\"; -fx-background-radius: 30px; -fx-effect: dropshadow(three-pass-box, rgb(0, 0, 0, 0.6), 5, 0.0, 0, 2);");
-			}
+			if(position == Pos.BASELINE_RIGHT) 	text.getStyleClass().add("clientBubbleSpeech");
+			else 								text.getStyleClass().add("friendBubbleSpeech");
 			textPhrase.getChildren().add(text);		
 		}
 		return textPhrase;

@@ -1,16 +1,46 @@
 .top {
-	-fx-font-size: 23pt;
-	-fx-background-color: "lawngreen";
+	-fx-font-size: 23pt; 
+	-fx-background-color: linear-gradient(to right, #00355e, #003541);
 }
 
-.top HBox{
-	/*-fx-font-size: 9pt;*/
+.friendName {
+	-fx-text-fill: white;
+}
+
+.keyword {
+	-fx-font-size: 9pt;
+}
+
+.talkHistory {
+	-fx-background-image: url("../images/background-chatroom.jpg");
 }
 
 .bottom {
 	-fx-background-color: "grey";
 }
 
-#talkHistory VBox {
-	-fx-background-color: "pink";
+.bottomHBox {
+	-fx-background-color: lightgray;
+}
+
+.emojiButton {
+	-fx-background-radius: 30px;
+}
+
+.messageButton {
+	-fx-background-radius: 30px;
+}
+
+.friendBubbleSpeech, .clientBubbleSpeech {
+	-fx-font-size: 13pt; 
+	-fx-background-radius: 30px; 
+	-fx-effect: dropshadow(three-pass-box, rgb(0, 0, 0, 0.6), 5, 0.0, 0, 2);
+}
+
+.clientBubbleSpeech {
+	-fx-background-color: "lightgreen";
+}
+
+.friendBubbleSpeech {
+	-fx-background-color: "lightgray";
 }

@@ -1,20 +1,25 @@
-.title {
-	-fx-background-color: "indianred";
+.addingFriend {
+	-fx-background-image: url("../images/addFriendImg_60x60.png"); 
+	-fx-background-color: "#00355e";
 }
 
-.title Label {
-	-fx-font-size: 45pt;
+.leftBox {
+	-fx-background-color: #00355e;
 }
 
-.friendData {
+.friendTag {
+	-fx-font-size: 20pt;
+	-fx-font-family: 'Courier';
+}
+
+.statusT, .statusF {
 	-fx-font-size: 20pt;
 }
 
-.friendData:hover {
-	-fx-text-fill: red;
-	-fx-background-color: #E8E7E7;
+.statusT {
+	-fx-text-fill: green;
 }
 
-.friendData Label:hover {
+.statusF {
 	-fx-text-fill: red;
 }
