@@ -30,9 +30,14 @@ public class ServerModel {
 				User inputUser= (User) ear.readObject();
 				System.out.println("server receive request from server ");
 				System.out.println("Server is checking email and password....");
-				
-				//User dataUser = d.selectUserById(inputUser.getUserID());
 				Message feedback = new Message();
+				
+				
+				//get data from database
+//				UserDao a = new UserDao();
+//				User dataUser = a.selectUserById(inputUser.getUserID());
+				
+				
 				
 	//------------------------------------need to get data from database------------------------
 //				if(inputUser.getUserID().equals(dataUser.getUserID()) && 
@@ -46,8 +51,6 @@ public class ServerModel {
 					//---------------------------------------------------------------------------
 					// update state to database
 					//----------------------------------------------------------------------------
-					
-					
 				   System.out.println("Server: login confirm.");
 				   
 				   // 1 means successful 

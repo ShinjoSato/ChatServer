@@ -34,6 +34,34 @@ public class ChatWindow {
 		createChatWindowStage();
 	}
 	
+	/**
+	 * @return the client
+	 */
+	public User getClient() {
+		return client;
+	}
+
+	/**
+	 * @param client the client to set
+	 */
+	public void setClient(User client) {
+		this.client = client;
+	}
+
+	/**
+	 * @return the friend
+	 */
+	public User getFriend() {
+		return friend;
+	}
+
+	/**
+	 * @param friend the friend to set
+	 */
+	public void setFriend(User friend) {
+		this.friend = friend;
+	}
+
 	public ChatWindow() {
 		
 	}
@@ -134,9 +162,13 @@ public class ChatWindow {
 	}
 	
 	public void receiveMessage(String message) {
-		System.out.println("-----\nTo: "+friend+"\nMessage: "+message+"\n-----");
-		talkHistory.getChildren().add( createSpeechBubble(message, Pos.BASELINE_LEFT) );
+		System.out.println("receiveMessage\n-----\nTo: "+friend+"\nMessage: "+message+"\n-----");
+		this.talkHistory.getChildren().add( createSpeechBubble(message, Pos.BASELINE_LEFT) );
 	    System.out.println("This is chat window, I receive "+ message);
+	}
+	
+	public void test() {
+		System.out.println("The client is "+client);
 	}
 	
 	/**

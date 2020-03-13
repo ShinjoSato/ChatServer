@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Scanner;
 import common.Message;
 import common.User;
@@ -34,6 +35,7 @@ public class ClientModel {
 				System.out.println("receive 1 from server, login successful");
 				NewClientThread thread = new NewClientThread(s);
 				ManagerClientThread.addServerThread(a.getUserID(), thread);
+				
 				thread.start();
 				System.out.println("client build the receive thread");
 				//

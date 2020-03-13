@@ -38,14 +38,15 @@ public class ClientController extends Application{
 	private static Stage primaryStage;
 	private static User ClientUser;
 	private List<User> UserTable;
-	protected static HashMap<User, ChatWindow> chatRooms;
+	protected static HashMap<String, ChatWindow> chatRooms;
 	private final static int WindowHeight = 600;
-	protected static User f;
+	static List<Integer> Transfer;	
+	public static ChatWindow c; 
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
-        chatRooms = new HashMap<User, ChatWindow>();
+        chatRooms = new HashMap<String, ChatWindow>();
         makeScene("fxml/login.fxml", "Login");
     }
 	
@@ -292,12 +293,13 @@ public class ClientController extends Application{
             @Override
             public void handle(MouseEvent event) {            	
             	List<Integer> friendIndex = list.getSelectionModel().getSelectedIndices();
-            	User friend = friends.get( friendIndex.get(0));
-            	f = friend; 
+            	User friend = friends.get(friendIndex.get(0));
+            //f = friend; 
             	if(chatRooms.get(friend) == null) {
             		System.out.println("create chatwindow");	
             		ChatWindow chatwindow = new ChatWindow(ClientUser,friend);
-            		chatRooms.put(friend, chatwindow);
+            		c=chatwindow;
+            		chatRooms.put(friend.getUserID(), chatwindow);
                     Stage stage2 = chatwindow.getStage();
                     stage2.show();
                     
@@ -306,6 +308,7 @@ public class ClientController extends Application{
                      * It happens when the client close the chat window.
                      * ---------------------------------------------------
                      */
+                    
                     stage2.showingProperty().addListener((observable, oldValue, newValue) -> {
                         if (oldValue == true && newValue == false) {
                         	System.out.println("The window close");
@@ -322,6 +325,21 @@ public class ClientController extends Application{
         });
 		return list;
 	}
+	
+	public static User getClient() {
+		return ClientUser;
+	}
+	
+	
+	public static String testString = "This is just a test.";
+	public static String test() {
+		return testString;
+	}
+	
+	public static HashMap<String, ChatWindow> getChatroom() {
+		return chatRooms; 
+	}
+	
 	public static void main(String[] args) {
 		System.out.println("Here is ClientContriller.java");
 	 	launch(args);
