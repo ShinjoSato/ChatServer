@@ -1,6 +1,8 @@
 package client;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
@@ -16,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,36 +37,10 @@ public class ChatWindow {
 		createChatWindowStage();
 	}
 
-	/**
-	 * @return the client
-	 */
-	public User getClient() {
-		return client;
-	}
-
-	/**
-	 * @param client the client to set
-	 */
-	public void setClient(User client) {
-		this.client = client;
-	}
-
-	/**
-	 * @return the friend
-	 */
-	public User getFriend() {
-		return friend;
-	}
-
-	/**
-	 * @param friend the friend to set
-	 */
-	public void setFriend(User friend) {
-		this.friend = friend;
-	}
-
 	public ChatWindow() {
 	}
+	
+	private ScrollPane scrollPane;
 	
 	public void createChatWindowStage() {
 		Group group = new Group();
@@ -70,7 +48,6 @@ public class ChatWindow {
 		VBox allcontent = new VBox();
 		
 		VBox top = new VBox();
-		top.setPrefWidth(450);
 		top.getStyleClass().add("top");
 		Label friendName = new Label(friend.getUserName());
 		friendName.getStyleClass().add("friendName");
@@ -85,12 +62,12 @@ public class ChatWindow {
 		top.getChildren().add(keyword);
 		
 		VBox middle = new VBox();
-		talkHistory.setPrefWidth(450);
-		talkHistory.setPrefHeight(420);
 		talkHistory.setId("talkHistoryTo"+friend.getUserID());
 		talkHistory.getStyleClass().add("talkHistory");
-		ScrollPane scrollPane = new ScrollPane(talkHistory);
+		//ScrollPane scrollPane = new ScrollPane(talkHistory);
+		scrollPane = new ScrollPane(talkHistory);
 	    scrollPane.setFitToHeight(true);
+	    scrollPane.setVvalue(1.0d);
 	    middle.getChildren().add(scrollPane);
 		
 		VBox bottom = new VBox();
@@ -99,18 +76,32 @@ public class ChatWindow {
 		bottomHBox.getStyleClass().add("bottomHBox");
 		TextArea chatText = new TextArea();
 		chatText.setWrapText(true);
-		chatText.setPrefHeight(100.0);
-		chatText.setPrefWidth(200.0);
-		Button emojiButton = new Button(":)");
+		chatText.getStyleClass().add("chatText");
+		Button emojiButton = new Button();
 		emojiButton.getStyleClass().add("emojiButton");
 		emojiButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				talkHistory.getChildren().add( createSpeechBubble(":)", Pos.BASELINE_RIGHT) );
+				talkHistory.getChildren().add( createSpeechBubble("emoji", Pos.BASELINE_RIGHT) );
+				
+				Message m = new Message();
+		        
+		        m.setSender(client.getUserID()); 
+		        m.setRecipient(friend.getUserID());// friednName
+		        m.setContain("emoji"); //message contain
+				System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
+		        try {
+					ObjectOutputStream mouth = new ObjectOutputStream(
+						(ClientController.getServerThread(m.getSender()).getS()).getOutputStream()
+					);
+				    mouth.writeObject(m);
+		        } catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
-		Button messageButton = new Button("send message");
+		Button messageButton = new Button();
 		messageButton.getStyleClass().add("messageButton");
 		/**
 		 * Send message function.
@@ -160,6 +151,10 @@ public class ChatWindow {
 		return this.stage;
 	}
 	
+	public void setScrollPaneLocation() {
+		this.scrollPane.setVvalue(1.0d);
+	}
+	
 	public void receiveMessage(String message) {
 		final String string = message;
 		Platform.runLater(new Runnable() {
@@ -169,20 +164,36 @@ public class ChatWindow {
 		    	talkHistory.getChildren().add( createSpeechBubble(string, Pos.BASELINE_LEFT) );
 		    }
 		});
-		createSpeechBubble(message, Pos.BASELINE_LEFT);
+		setScrollPaneLocation();
+		//createSpeechBubble(message, Pos.BASELINE_LEFT);
 	}
 
 	public VBox createSpeechBubble(String message, Pos position) {
 		VBox textPhrase = new VBox();
 		if(!message.equals("")) {
-			textPhrase.setPrefWidth(0.2);
-			textPhrase.setPrefHeight(0.2);
+			textPhrase.getStyleClass().add("bubble");
 			textPhrase.setAlignment(position);		
-
-			Label text = new Label("  "+message+"  ");
-			if(position == Pos.BASELINE_RIGHT) 	text.getStyleClass().add("clientBubbleSpeech");
-			else 								text.getStyleClass().add("friendBubbleSpeech");
-			textPhrase.getChildren().add(text);		
+			switch(message) {
+				case "emoji":{
+					Image image = null;
+					try {
+						image = new Image(new FileInputStream("./bin/client/images/thumbUp_180x102.png"));
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+					ImageView imageView = new ImageView(image);
+					textPhrase.getChildren().add(imageView);
+					break;
+				}
+				default: {
+					Label text = new Label("  "+message+"  ");
+					if(position == Pos.BASELINE_RIGHT) 	text.getStyleClass().add("clientBubbleSpeech");
+					else 								text.getStyleClass().add("friendBubbleSpeech");
+					textPhrase.getChildren().add(text);
+					break;
+				}
+			}
 		}
 		return textPhrase;
 	}

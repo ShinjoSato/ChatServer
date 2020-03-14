@@ -45,6 +45,7 @@ public class ClientController extends Application{
 	private final static int WindowHeight = 600;
 	static List<Integer> Transfer;	
 	public static ChatWindow c; 
+	private final String address = "172.22.108.237";
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
@@ -126,7 +127,7 @@ public class ClientController extends Application{
     
 	public  User sendLogInToServer(String ID, String password) {
 		try {
-			s = new Socket("10.114.205.7",50000);
+			s = new Socket(address,50000);
 			//Send login request to server
 			ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
 			User a = new User();

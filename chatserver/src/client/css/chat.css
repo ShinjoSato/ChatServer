@@ -1,5 +1,6 @@
 .top {
-	-fx-font-size: 23pt; 
+	-fx-font-size: 23pt;
+	-fx-pref-width: 450;
 	-fx-background-color: linear-gradient(to right, #00355e, #003541);
 }
 
@@ -12,7 +13,28 @@
 }
 
 .talkHistory {
+	-fx-pref-width: 450;
+	-fx-pref-height: 420;
 	-fx-background-image: url("../images/background-chatroom.jpg");
+}
+
+.friendBubbleSpeech, .clientBubbleSpeech {
+	-fx-font-size: 13pt; 
+	-fx-background-radius: 30px; 
+	-fx-effect: dropshadow(three-pass-box, rgb(0, 0, 0, 0.6), 5, 0.0, 0, 2);
+}
+
+.bubble {
+	-fx-pref-width: 0.2;
+	-fx-pref-height: 0.2;
+}
+
+.clientBubbleSpeech {
+	-fx-background-color: "lightgreen";
+}
+
+.friendBubbleSpeech {
+	-fx-background-color: "lightgray";
 }
 
 .bottom {
@@ -25,22 +47,23 @@
 
 .emojiButton {
 	-fx-background-radius: 30px;
+	-fx-pref-width: 45px;
+	-fx-background-image: url('../images/thumbUp_48x27.png');
 }
 
 .messageButton {
-	-fx-background-radius: 30px;
+	-fx-pref-width: 45px;
+	-fx-background-image: url('../images/paperairplane_27x27.png');
+ 	-fx-background-repeat: no-repeat;
+  	-fx-background-position: center;
+  	-fx-background-radius: 30px;
 }
 
-.friendBubbleSpeech, .clientBubbleSpeech {
-	-fx-font-size: 13pt; 
-	-fx-background-radius: 30px; 
-	-fx-effect: dropshadow(three-pass-box, rgb(0, 0, 0, 0.6), 5, 0.0, 0, 2);
+.messageButton:hover {
+	-fx-background-color: "skyblue";
 }
 
-.clientBubbleSpeech {
-	-fx-background-color: "lightgreen";
-}
-
-.friendBubbleSpeech {
-	-fx-background-color: "lightgray";
+.chatText {
+	-fx-pref-width: 200;
+	-fx-pref-height: 100;
 }
