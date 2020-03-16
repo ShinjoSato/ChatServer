@@ -1,6 +1,7 @@
 package common;
 
 public interface MessageType {
+	String message_register="0";//register
 	String message_succeed="1";//Login successful
 	String message_login_fail="2";//login fail
 	String message_comm_mes="3";//chat message

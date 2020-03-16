@@ -6,11 +6,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import client.ChatWindow;
 import common.Message;
 import common.User;
 
 public class ServerModel {
+	List<User> dummyList;
+	List<User> userTable;
     
 	public ServerModel(){
 		try {
@@ -24,65 +30,106 @@ public class ServerModel {
 				
 				//receive information from client
 				ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
-				//send information to server
-				ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
+				Message requestFromClient =(Message) ear.readObject();
+				User loginUser= requestFromClient.getUser();
+				System.out.println("server receive request from client ");
 				
-				User inputUser= (User) ear.readObject();
-				System.out.println("server receive request from server ");
-				System.out.println("Server is checking email and password....");
+				//send information to client
+				ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
 				Message feedback = new Message();
 				
 				
+				//This is about database
 				//get data from database
-//				UserDao a = new UserDao();
-//				User dataUser = a.selectUserById(inputUser.getUserID());
+				UserDao database = new UserDao();
+			//	User dataUser = database.selectUserById(loginUser.getUserID());
 				
-				
-				
-	//------------------------------------need to get data from database------------------------
-//				if(inputUser.getUserID().equals(dataUser.getUserID()) && 
-//				   inputUser.getPassword().equals(dataUser.getPassword())) {
-	//------------------------------------need to get data from database------------------------
-				
-				if(inputUser.getUserID().equals("yxc1016") && inputUser.getPassword().equals("12345")
-				   || inputUser.getUserID().equals("01") && inputUser.getPassword().equals("12345")
-				   || inputUser.getUserID().equals("03") && inputUser.getPassword().equals("12345")) {   
-				   
-					//---------------------------------------------------------------------------
-					// update state to database
-					//----------------------------------------------------------------------------
-				   System.out.println("Server: login confirm.");
-				   
-				   // 1 means successful 
-				   feedback.setMessageType("1");
-				   
-				   mouth.writeObject(feedback);
-				   System.out.println("End");
-				   
-				   //build a thread between server and client, different client will input different socket
-				   NewServerThread thread = new NewServerThread(s);
-				   ManagerServerThread.addClientThread(inputUser.getUserID(), thread);
-				   //start the thread
-				   thread.start();
+				String command = requestFromClient.getMessageType();
+				switch (command) {
+				  case "0": // register request
+					 System.out.println("Server is checking data with database....");
+					 if(!chekcExist(loginUser.getUserID())) {
+						loginUser.setState(true);
+						database.insertUser(loginUser);
+						System.out.println("Server: register successful");
+						feedback.setMessageType("0");
+						mouth.writeObject(feedback);
+						//build a thread between server and client, different client will input different socket
+						NewServerThread thread = new NewServerThread(s,userTable);
+						ManagerServerThread.addClientThread(loginUser.getUserID(), thread);
+						//start the thread
+						thread.start();
+						System.out.println("finish");
+					    }else {
+						   // 2 means fail
+							  feedback.setMessageType("2");	
+							  System.out.println("register Fail");
+							  mouth.writeObject(feedback);
+						     //if fail,then close this connection into while loop start again
+							  s.close();
+						} 
+					    break;
+				  case "1": // login request
+					  //------------------------------------ get data from database------------------------
+//				      if(loginUser.getUserID().equals(dataUser.getUserID()) && 
+//				        loginUser.getPassword().equals(dataUser.getPassword())) {
+					  //------------------------------------ get data from database------------------------
+					
+					  System.out.println("Server is checking email and password....");
+					  if(loginUser.getUserID().equals("01") && loginUser.getPassword().equals("12345")
+							   || loginUser.getUserID().equals("02") && loginUser.getPassword().equals("12345")
+							   || loginUser.getUserID().equals("03") && loginUser.getPassword().equals("12345")) {  	
+					      System.out.println("Server: login successful");
+					      
+					//    database.updateUser(loginUser);
+					      
+					   // 1 means successful 
+					      feedback = requestFromClient;
+				          userTable = new ArrayList<User>(); 
+				          userTable = database.selectAllBut(loginUser.getUserID());//get userTable from database 
+					      feedback.getUser().setFriendList(userTable);
+					      mouth.writeObject(feedback);
+					      System.out.println("This is server I send friendList "+feedback.getUser().getFriendList().toString());
+					      
+					      
+					   //build a thread between server and client, different client will input different socket
+					      NewServerThread thread = new NewServerThread(s,userTable);
+					      ManagerServerThread.addClientThread(loginUser.getUserID(), thread);
+					   //start the thread
+					      thread.start();
+					      System.out.println("finish");
+					  }
+					  else {
+					   // 2 means fail
+						  feedback.setMessageType("2");	
+						  System.out.println("login Fail");
+						  mouth.writeObject(feedback);
+					      //if fail,then close this connection into while loop start again
+						  s.close();
+					} 
+				    break;
+//				  case 3:
+//				    System.out.println("Wednesday");
+//				    break;
 				}
-				else {
-				   // 2 means fail
-				   feedback.setMessageType("2");	
-				   System.out.println("login Fail");
-				   mouth.writeObject(feedback);
-				   //if fail,then close this connection into while loop start again
-				   s.close();
-				} 
-				// send the result to client
 			}	
 		} 
 		catch (Exception e) {
 			   e.printStackTrace();
 		}
-		
-		
-		
 	}
+	
+	public boolean chekcExist(String userID) {
+		boolean exist= true;
+		UserDao a = new UserDao();
+		User input = a.selectUserById(userID);
+		if(input==null) {
+		   exist = false;	
+		}
+		return exist;
+	}
+	
+	
 	public static void main(String[] args) {
 		ServerModel s =new ServerModel();
 	}

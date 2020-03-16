@@ -30,6 +30,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.scene.layout.Pane;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -37,16 +38,16 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ClientController extends Application{
+public class ClientController extends Application {
 	private static Stage primaryStage;
 	private User ClientUser;
-	private List<User> UserTable;
+	private static List<User> UserTable;
 	protected static HashMap<String, ChatWindow> chatRooms;
 	private final static int WindowHeight = 600;
 	static List<Integer> Transfer;	
-	public static ChatWindow c; 
+//	public static ChatWindow c; 
 	private final String address = "172.22.108.237";
-
+    
 	@Override
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
@@ -110,6 +111,7 @@ public class ClientController extends Application{
     protected void signIn(ActionEvent event) throws Exception{        
         // Finally we use this one: input email and password.
         User ClientUser = sendLogInToServer(userID.getText(), password.getText());
+        System.out.println("this is signin "+ClientUser.getFriendList().toString());
         
         if(ClientUser.getUserID() == null){
         	Stage newStage = new Stage();
@@ -118,6 +120,14 @@ public class ClientController extends Application{
     		newStage.setTitle(ClientUser.getUserID());
     		newStage.show();
         }else{
+        	UserTable=ClientUser.getFriendList();
+        	//send friend list request to server
+//        	ObjectOutputStream mouth = new ObjectOutputStream(getServerThread(ClientUser.getUserID()).getS().getOutputStream());
+//        	Message friendListRequest = new Message();
+//        	friendListRequest.setMessageType(MessageType.message_get_onLineFriend);
+//        	friendListRequest.setSender(ClientUser.getUserID());
+//        	mouth.writeObject(friendListRequest);
+        	
         	this.primaryStage.close();
         	createFriendListWindow(ClientUser);
         }
@@ -125,27 +135,32 @@ public class ClientController extends Application{
     
     Socket s;
     
-	public  User sendLogInToServer(String ID, String password) {
+	public User sendLogInToServer(String ID, String password) {
 		try {
 			s = new Socket(address,50000);
 			//Send login request to server
 			ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
-			User a = new User();
-			a.setUserID(ID);
-			a.setPassword(password);
-			mouth.writeObject(a);
+			User loginUser = new User();
+			loginUser.setUserID(ID);
+			loginUser.setPassword(password);
+			Message loginRequest = new Message();
+			loginRequest.setMessageType("1"); 
+			loginRequest.setUser(loginUser);
+			mouth.writeObject(loginRequest);
 
 			//receive result from server
 			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
 			Message resultFromServer = (Message) ear.readObject();
 			//verify login
 			if (resultFromServer.getMessageType().equals("1")) {
-				a.setState(true);
 				NewClientThread thread = new NewClientThread(s, chatRooms);
-				addServerThread(a.getUserID(), thread);
-				
+				addServerThread(loginUser.getUserID(), thread);
 				thread.start();
-				return a;
+				;
+	            //loginUser.setFriendList(resultFromServer.getUser().getFriendList());
+				//return loginUser;
+				System.out.println("This client I get friend List"+resultFromServer.getUser().getFriendList().toString());
+				return resultFromServer.getUser();
 			}
 		}
 		catch (Exception e) {
@@ -153,6 +168,40 @@ public class ClientController extends Application{
 		}
 		return new User();
     }
+	
+	public  User register(String email, String registerID , String password) {
+		try {
+		s = new Socket(address,50000);
+		//Send register request to server
+		ObjectOutputStream mouth = new ObjectOutputStream(s.getOutputStream());
+		User registerUser = new User();
+		registerUser.setEmail(email);
+		registerUser.setUserID(registerID);
+		registerUser.setPassword(password);
+		Message registerRequest = new Message();
+		registerRequest.setMessageType(MessageType.message_register); 
+		registerRequest.setUser(registerUser);
+		mouth.writeObject(registerRequest);
+
+		//receive result from server
+		ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
+		Message resultFromServer = (Message) ear.readObject();
+		//verify login
+		if (resultFromServer.getMessageType().equals("0")) {
+			NewClientThread thread = new NewClientThread(s, chatRooms);
+			addServerThread(registerUser.getUserID(), thread);
+			thread.start();
+			return registerUser;
+		}
+	}
+	catch (Exception e) {
+		   e.printStackTrace();
+	}
+	return new User();
+}
+	
+	
+	
 	
 	public static HashMap threadTable = new HashMap<String ,NewClientThread>();
 	// if on-line the email ID should be in the map
@@ -168,15 +217,27 @@ public class ClientController extends Application{
 	    return (NewClientThread)threadTable.get(userID);
 	}
     
+	private static boolean isTest = true;
     public static List<User> getUserTable(){
     	List<User> userTable = new ArrayList<User>();
-        userTable.add(new User("01", "Shinjo Shinjo", "12345", "sxs1640@student.bham.ac.uk", true));
-        userTable.add(new User("yxc1016", "Yi-Ming Chen", "12345", "yxc1016@student.bham.ac.uk", true));
-        userTable.add(new User("03", "Zhengnan Sun", "12345", "zxs944@student.bham.ac.uk", false));
-        userTable.add(new User("04", "Saba Akhlagh-Nejat", "12345", "sxa1012@student.bham.ac.uk", true));
-        userTable.add(new User("05", "Ibiyemi Ogunyemi", "12345", "ixo984@student.bham.ac.uk", false));
-        userTable.add(new User("06", "root", "1", "mail", false));
-        
+    	//userTable =UserTable;
+    	if(isTest) {
+    		userTable.add(new User("01", "Shinjo Shinjo",false));
+            userTable.add(new User("yxc1016", "Yi-Ming Chen", false));
+            userTable.add(new User("03", "Zhengnan Sun", false));
+            userTable.add(new User("04", "Saba Akhlagh-Nejat", false));
+            userTable.add(new User("05", "Ibiyemi Ogunyemi", false));
+            userTable.add(new User("06", "root", "1", "mail", false));
+            isTest = false;
+    	}else {
+    		userTable.add(new User("01", "Shinjo Shinjo",false));
+            userTable.add(new User("yxc1016", "Yi-Ming Chen", true));
+            userTable.add(new User("03", "Zhengnan Sun", false));
+            userTable.add(new User("04", "Saba Akhlagh-Nejat", true));
+            userTable.add(new User("05", "Ibiyemi Ogunyemi", false));
+            userTable.add(new User("06", "root", "1", "mail", false));
+            isTest = true;
+    	}        
         return userTable;
     }
 
@@ -243,6 +304,7 @@ public class ClientController extends Application{
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("click addingFriend button.");
+				updateFriendList();
 			}
     	});
     	leftBox.getChildren().add(addingFriend);
@@ -250,7 +312,8 @@ public class ClientController extends Application{
     	VBox mainBox = new VBox();
     	mainBox.setPrefWidth(390);
     	mainBox.setPrefHeight(WindowHeight);
-    	VBox friendListBox = new VBox();
+    	//VBox friendListBox = new VBox();
+    	friendListBox = new VBox();
     	friendListBox.setId("friendListBox");
     	friendListBox.getChildren().add(createFriendListView(getUserTable(), ClientUser));
     	
@@ -276,18 +339,32 @@ public class ClientController extends Application{
     	if(friendListBox == null) {
     		friendListBox = new VBox();
     	}
+    	friendListBox.getChildren().clear(); 
+    	friendListBox.getChildren().add(friendlist);
+    }
+    
+    public void updateFriendList(ArrayList<User> friends) {
+    	ListView<HBox> friendlist = createFriendListView(friends, ClientUser);
+    	if(friendListBox == null) {
+    		friendListBox = new VBox();
+    	}
+    	friendListBox.getChildren().clear(); 
     	friendListBox.getChildren().add(friendlist);
     }
     
 	public static ListView<HBox> createFriendListView(List<User> friends, User ClientUser) {
     	ObservableList<HBox> tests = FXCollections.observableArrayList();
+    	//friends = ClientUser.getFriendList();
     	for(int i=0; i<friends.size(); i++) {
     		Label friendTag = new Label(friends.get(i).getUserName());
 			friendTag.getStyleClass().add("friendTag");
-    		Label statusTag = new Label("●");
-    		if(friends.get(i).isState()) statusTag.getStyleClass().add("statusT");
-    		else 						 statusTag.getStyleClass().add("statusF");
-    		HBox friendrow = new HBox(statusTag, friendTag);
+			//Label statusTag = new Label("●");
+    		Circle statusCircle = new Circle(8.0);
+    		/*if(friends.get(i).isState()) statusTag.getStyleClass().add("statusT");
+    		else 						 statusTag.getStyleClass().add("statusF");*/
+    		if(friends.get(i).isState()) statusCircle.getStyleClass().add("statusT");
+    		else 						 statusCircle.getStyleClass().add("statusF");
+    		HBox friendrow = new HBox(statusCircle, friendTag);
     		
     		tests.add(friendrow);
     	}

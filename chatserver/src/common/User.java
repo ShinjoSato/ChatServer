@@ -1,6 +1,8 @@
 package common;
 
+
 import java.io.Serializable;
+import java.util.List;
 
 import client.ClientController;
 
@@ -10,7 +12,8 @@ public class User implements Serializable{
 	private String password;
 	private String email;
 	private boolean state;
-	
+	private List<User> friendList;
+
 	public User (String userID, String userName, String password, String email, boolean state) {
 		this.userID = userID;
 		this.userName = userName;
@@ -20,6 +23,13 @@ public class User implements Serializable{
 	}
 	
 	public User () {
+	}
+	
+	//this is from friend list
+	public User (String userID, String userName, boolean state) {
+		this.userID = userID;
+		this.userName = userName;
+		this.state = state;
 	}
 	
 	/**
@@ -84,8 +94,20 @@ public class User implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "User [userID=" + userID + ", UserName=" + userName + ", password=" + password + ", email=" + email
-				+ ", state=" + state + "]";
-	} 
+		return "User [userID=" + userID + ", userName=" + userName + ", state=" + state + "]";
+	}
+	
+	/**
+	 * @return the friendList
+	 */
+	public List<User> getFriendList() {
+		return friendList;
+	}
+	/**
+	 * @param friendList the friendList to set
+	 */
+	public void setFriendList(List<User> friendList) {
+		this.friendList = friendList;
+	}
+	
 }
-

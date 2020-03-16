@@ -1,5 +1,6 @@
 package common;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * make rules for message 
@@ -11,33 +12,23 @@ public class Message implements Serializable{
 	private String recipient;
 	private String contain;
 	private String sendTime;
-	private User owner;
-	private User friend;
-	/**
-	 * @return the owner
-	 */
-	public User getOwner() {
-		return owner;
-	}
-	/**
-	 * @param owner the owner to set
-	 */
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
-	/**
-	 * @return the friend
-	 */
-	public User getFriend() {
-		return friend;
-	}
-	/**
-	 * @param friend the friend to set
-	 */
-	public void setFriend(User friend) {
-		this.friend = friend;
-	}
+	private User user;
 	
+	
+	
+	
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
 	/**
 	 * @return the messageType
 	 */

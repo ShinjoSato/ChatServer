@@ -13,6 +13,7 @@ import common.Message;
 //import server.NewServerThread;
 import common.MessageType;
 import common.User;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -23,7 +24,6 @@ import java.io.*;
  */
 public class NewClientThread extends Thread{
 	 private Socket s;
-	 
 	 public HashMap<String, ChatWindow> chatRooms;
 	 
 	 /**
@@ -42,37 +42,44 @@ public class NewClientThread extends Thread{
 	    	//To get the socket of thread.
 	    	this.s=s;
 	    	this.chatRooms = chatRooms;
-	    }
+	 }
+	
 	 public void run() {
 		 while(true) {
 			 try {
 				ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
-				
     			Message m = (Message) ear.readObject();
     			System.out.println(m.getSender()+" to "+m.getRecipient() + " say: "+ m.getContain());
 
+    			
     			/**
     			 * show the receive text on the chat window
     			 */
-    			System.out.println("NewClientThread 59");
-    			for(int i =0;i<ClientController.getUserTable().size();i++) {
-    				if(ClientController.getUserTable().get(i).getUserID().equals(m.getSender())) {
-    				   System.out.println("line 62 "+ClientController.getUserTable().get(i));
-    				   System.out.println("line 63 "+ClientController.chatRooms.get(ClientController.getUserTable().get(i)));
-    				   System.out.println("line 64 "+ClientController.getChatroom());
-    				   User testUser =ClientController.getUserTable().get(i);
-    				   System.out.println("line 66 "+ testUser);
-    				   ChatWindow user1 = chatRooms.get(testUser.getUserID());
-    				   System.out.println("line 68 "+ user1);
-    				   
-    				   user1.receiveMessage(m.getContain());
-    				}
+    			if (m.getMessageType().equals(MessageType.message_comm_mes)) {
+    			    for(int i =0;i<ClientController.getUserTable().size();i++) {
+    				    User friend = ClientController.getUserTable().get(i);
+    				    if(friend.getUserID().equals(m.getSender())) {
+    				    ChatWindow friendWindow = chatRooms.get(friend.getUserID());
+    				    friendWindow.receiveMessage(m.getContain());
+    				   }
+    		        }
     			}
+    			else if(m.getMessageType().equals(MessageType.message_ret_onLineFriend)) {
+        			//m.getFriendList();
+        			//send List to GUI
+    				ClientController.updateFriendList(/*ArrayList<User> here*/);
+    			}
+    			
+    			
+    			
+    			
+    			
+    			
+    			
 			 } catch (Exception e) {
 				  e.printStackTrace();
 			}
 		 }
 		 
 	 }
-
 }

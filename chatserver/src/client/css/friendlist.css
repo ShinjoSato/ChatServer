@@ -12,14 +12,10 @@
 	-fx-font-family: 'Courier';
 }
 
-.statusT, .statusF {
-	-fx-font-size: 20pt;
-}
-
 .statusT {
-	-fx-text-fill: green;
+	-fx-fill: "lightgreen";
 }
 
 .statusF {
-	-fx-text-fill: red;
+	-fx-fill: "pink";
 }

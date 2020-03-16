@@ -1,10 +1,13 @@
 package server;
 
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import client.*;
 import common.Message;
 import common.MessageType;
+import common.User;
 
 import java.io.*;
 /**
@@ -16,37 +19,55 @@ import java.io.*;
 
 public class NewServerThread extends Thread{
 	Socket s;
+	List<User> userTable;
 	
-    public NewServerThread(Socket s) {
+	
+    public NewServerThread(Socket s, List<User> userTable ) {
     	//to get the socket of thread
     	this.s=s;
+    	this.userTable=userTable;
     }
     public void run() {
     	while(true) {
     		
     		try {
-    			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
     			//this thread can receive message from client
-    			//sender  ------- Hi ----------------> server
+    			ObjectInputStream ear = new ObjectInputStream(s.getInputStream());
     			Message m = (Message) ear.readObject();
-    		//	System.out.println(m.getSender()+" to "+m.getRecipient() + " say: "+ m.getContain());
     			System.out.println("-----\nFrom:"+m.getSender()+"\nTo: "+m.getRecipient()+"\nMessage: "+m.getContain()+"\n-----");
     			
     			//handle different type of message
-    			//3 is message
-    			//4 is Friend on-line state request
-    			//5
-    	//		if(m.getMessageType().equals(MessageType.message_comm_mes)) {
+
+    			//server ------- text ---------------->recipient 
+    			if(m.getMessageType().equals("3")) {
     			   //To get the thread of recipient
-    			   //server ------- Hi ---------------->recipient 
-    			   System.out.println("check I am here 1");
     			   NewServerThread FindRecipent = ManagerServerThread.getClientThread(m.getRecipient());
-    			   System.out.println("check I am here 2");
     			   ObjectOutputStream  mouth = new ObjectOutputStream(FindRecipent.s.getOutputStream());
-    			   System.out.println("check I am here 3");
     			   mouth.writeObject(m);
-    			   System.out.println("check I am here 4");
-//    			}else if(m.getMessageType().equals(MessageType.message_get_onLineFriend)){
+    			   System.out.println("transfer message successful" );
+    			}
+    			else if(m.getMessageType().equals(MessageType.message_get_onLineFriend)){
+    				User client = m.getUser();//to use in database selectALL
+    				UserDao database = new UserDao();
+    				userTable = database.selectAll();//select except owner , user in list have id, name, state
+    			    
+    			    NewServerThread FindSender = ManagerServerThread.getClientThread(m.getSender());
+    			    ObjectOutputStream  mouth = new ObjectOutputStream(FindSender.s.getOutputStream());
+     			    mouth.writeObject(m);//send friendList back to sender
+     			    System.out.println("return friendList back successful");
+    			    
+    			}
+    				
+    			
+    				//List<User> FriendList = userTable;
+//    				for(int i =0;i<ClientController.getUserTable().size();i++) {
+//    				    User friend = ClientController.getUserTable().get(i);
+//    				    if(friend.isState()==true) {
+//    				    userTable.add(friend);
+//    				    }
+//    				}
+    		    }
+    			   	
 //    			   String res=ManagerServerThread.getAllOnlineUserID();
 //    			   Message m2 =new Message();
 //    			   m2.setMessageType(MessageType.message_ret_onLineFriend);
@@ -55,8 +76,7 @@ public class NewServerThread extends Thread{
 //    			   ObjectOutputStream  mouth = new ObjectOutputStream(s.getOutputStream());
 //    			   mouth.writeObject(m2);
 //    			   
-  //  			}   
-    		}
+//    			}   
     	    catch (Exception e) {
     			   e.printStackTrace();
     	    }	   

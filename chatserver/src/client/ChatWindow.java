@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import common.*;
 import javafx.application.Platform;
@@ -16,10 +18,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -41,6 +46,8 @@ public class ChatWindow {
 	}
 	
 	private ScrollPane scrollPane;
+	
+	//private TextArea chatText;
 	
 	public void createChatWindowStage() {
 		Group group = new Group();
@@ -67,7 +74,9 @@ public class ChatWindow {
 		//ScrollPane scrollPane = new ScrollPane(talkHistory);
 		scrollPane = new ScrollPane(talkHistory);
 	    scrollPane.setFitToHeight(true);
-	    scrollPane.setVvalue(1.0d);
+	    scrollPane.setVvalue(100.0);
+	    scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+	    scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 	    middle.getChildren().add(scrollPane);
 		
 		VBox bottom = new VBox();
@@ -75,6 +84,18 @@ public class ChatWindow {
 		HBox bottomHBox = new HBox();
 		bottomHBox.getStyleClass().add("bottomHBox");
 		TextArea chatText = new TextArea();
+		//chatText = new TextArea();
+		chatText.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+		    @Override
+		    public void handle(KeyEvent ke) {
+		        if (ke.getCode().equals(KeyCode.ENTER)) {
+			        postMessage(chatText.getText());
+			        chatText.setText("");
+			        setScrollPaneLocation();
+			        ke.consume(); 
+		        }
+		    }
+		});
 		chatText.setWrapText(true);
 		chatText.getStyleClass().add("chatText");
 		Button emojiButton = new Button();
@@ -82,22 +103,8 @@ public class ChatWindow {
 		emojiButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				talkHistory.getChildren().add( createSpeechBubble("emoji", Pos.BASELINE_RIGHT) );
-				
-				Message m = new Message();
-		        
-		        m.setSender(client.getUserID()); 
-		        m.setRecipient(friend.getUserID());// friednName
-		        m.setContain("emoji"); //message contain
-				System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
-		        try {
-					ObjectOutputStream mouth = new ObjectOutputStream(
-						(ClientController.getServerThread(m.getSender()).getS()).getOutputStream()
-					);
-				    mouth.writeObject(m);
-		        } catch (IOException e) {
-					e.printStackTrace();
-				}
+		        postMessage("emoji");
+		        setScrollPaneLocation();
 			}
 		});
 		
@@ -109,26 +116,26 @@ public class ChatWindow {
 		messageButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				talkHistory.getChildren().add( createSpeechBubble(chatText.getText(), Pos.BASELINE_RIGHT) );
-                Message m = new Message();
-		        
-		        m.setSender(client.getUserID()); 
-		        m.setRecipient(friend.getUserID());// friednName
-		        m.setContain(chatText.getText()); //message contain
-				System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+chatText.getText()+"\n-----");
-		        try {
-					ObjectOutputStream mouth = new ObjectOutputStream(
-						(ClientController.getServerThread(m.getSender()).getS()).getOutputStream()
-					);
-				    mouth.writeObject(m);
-		        } catch (IOException e) {
-					e.printStackTrace();
-				}
-		        chatText.setText("");
+				postMessage(chatText.getText());
+				chatText.setText("");
+		        setScrollPaneLocation();
 			}	
+		});
+		
+		// Add function here! 2020-03-15
+		Button reloadButton = new Button();
+		reloadButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+				reloadPreviousTalk();
+			}
+			
 		});
 		bottomHBox.getChildren().add(emojiButton);
 		bottomHBox.getChildren().add(messageButton);
+		bottomHBox.getChildren().add(reloadButton);
 		bottom.getChildren().add(bottomHBox);
 		bottom.getChildren().add(chatText);
 		
@@ -152,7 +159,47 @@ public class ChatWindow {
 	}
 	
 	public void setScrollPaneLocation() {
-		this.scrollPane.setVvalue(1.0d);
+		this.scrollPane.setVvalue(1.0);
+		System.out.println(this.scrollPane.getVvalue());
+	}
+	
+	// Add function here! 2020-03-15
+	private boolean canReload = true;
+	// public void reloadPreviousTalk(ArrayList<String> previousTalk) {
+	public void reloadPreviousTalk() {
+		System.out.println("reloadPreviousTalk()");
+		List<String> previousTalk = new ArrayList<String>();
+		previousTalk.add("hi");
+		previousTalk.add("hi");
+		previousTalk.add("hi");
+		previousTalk.add("hi");
+		previousTalk.add("hi");
+		
+		if(canReload) {
+			canReload = false;
+			previousTalk.forEach(talk -> {
+				receiveMessage(talk);
+			});
+		}
+	}
+	
+	public void postMessage(String message) {
+		talkHistory.getChildren().add( createSpeechBubble(message, Pos.BASELINE_RIGHT) );
+        Message m = new Message();
+        
+        m.setMessageType(MessageType.message_comm_mes);
+        m.setSender(client.getUserID()); 
+        m.setRecipient(friend.getUserID());// friednName
+        m.setContain(message); //message contain
+		System.out.println("-----\nFrom:"+client+"\nTo: "+friend+"\nMessage: "+message+"\n-----");
+        try {
+			ObjectOutputStream mouth = new ObjectOutputStream(
+				(ClientController.getServerThread(m.getSender()).getS()).getOutputStream()
+			);
+		    mouth.writeObject(m);
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void receiveMessage(String message) {
@@ -165,7 +212,6 @@ public class ChatWindow {
 		    }
 		});
 		setScrollPaneLocation();
-		//createSpeechBubble(message, Pos.BASELINE_LEFT);
 	}
 
 	public VBox createSpeechBubble(String message, Pos position) {
@@ -187,7 +233,7 @@ public class ChatWindow {
 					break;
 				}
 				default: {
-					Label text = new Label("  "+message+"  ");
+					Label text = new Label(message);
 					if(position == Pos.BASELINE_RIGHT) 	text.getStyleClass().add("clientBubbleSpeech");
 					else 								text.getStyleClass().add("friendBubbleSpeech");
 					textPhrase.getChildren().add(text);
